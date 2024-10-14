@@ -1050,7 +1050,7 @@ function DEVIL_UI_Library_PC:CreateWindow(GuiName, GameName)
     
     Main.Name = "Main"
     Main.Parent = ScreenGui
-    Main.BackgroundColor3 = Color3.fromRGB(100, 0, 100)
+    Main.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     Main.BorderColor3 = Color3.fromRGB(255, 255, 255)
     Main.BorderSizePixel = 2
     Main.Position = UDim2.new(0.5, -250, 0.5, -150)
@@ -1059,14 +1059,14 @@ function DEVIL_UI_Library_PC:CreateWindow(GuiName, GameName)
     
     GameNameFrame.Name = "GameNameFrame"
     GameNameFrame.Parent = Main
-    GameNameFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    GameNameFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     GameNameFrame.BorderSizePixel = 0
     GameNameFrame.Size = UDim2.new(0, 500, 0, 40)
     GameNameFrame.ZIndex = 999999999
     
     HubName.Name = "HubName"
     HubName.Parent = GameNameFrame
-    HubName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    HubName.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     HubName.BackgroundTransparency = 1.000
     HubName.BorderSizePixel = 0
     HubName.Position = UDim2.new(0.0199999996, 0, 0, 0)
