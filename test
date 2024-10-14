@@ -1066,7 +1066,7 @@ function DEVIL_UI_Library_PC:CreateWindow(GuiName, GameName)
     
     HubName.Name = "HubName"
     HubName.Parent = GameNameFrame
-    HubName.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    HubName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     HubName.BackgroundTransparency = 1.000
     HubName.BorderSizePixel = 0
     HubName.Position = UDim2.new(0.0199999996, 0, 0, 0)
