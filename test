@@ -1050,7 +1050,7 @@ function DEVIL_UI_Library_PC:CreateWindow(GuiName, GameName)
     
     Main.Name = "Main"
     Main.Parent = ScreenGui
-    Main.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    Main.BackgroundColor3 = Color3.fromRGB(100, 0, 100)
     Main.BorderColor3 = Color3.fromRGB(255, 255, 255)
     Main.BorderSizePixel = 2
     Main.Position = UDim2.new(0.5, -250, 0.5, -150)
