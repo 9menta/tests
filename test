@@ -104,20 +104,20 @@ function DEVIL_UI_Library_Mobile:CreateWindow(GuiName, GameName)
 
     Main.Name = "Main"
     Main.Parent = DEVIL_UI_Lib
-    Main.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    Main.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     Main.BorderSizePixel = 0
     Main.Position = UDim2.new(0.5, -250, 0.5, -125)
     Main.Size = UDim2.new(0, 500, 0, 250)
 
     GameNameFrame.Name = "GameNameFrame"
     GameNameFrame.Parent = Main
-    GameNameFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    GameNameFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
     GameNameFrame.BorderSizePixel = 0
     GameNameFrame.Size = UDim2.new(0, 500, 0, 40)
 
     HubName.Name = "HubName"
     HubName.Parent = GameNameFrame
-    HubName.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    HubName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     HubName.BackgroundTransparency = 1.000
     HubName.Position = UDim2.new(0.0200000014, 0, 0, 0)
     HubName.Size = UDim2.new(0, 490, 0, 40)
@@ -139,8 +139,9 @@ function DEVIL_UI_Library_Mobile:CreateWindow(GuiName, GameName)
     mainCorner.Parent = Main
 
     SideBar.Name = "SideBar"
-    SideBar.Parent = MainSideBar.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
-    SideBar.BackgroundTransparency = 0.8
+    SideBar.Parent = Main
+    SideBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    SideBar.BackgroundTransparency = 1.000
     SideBar.BorderSizePixel = 0
     SideBar.Position = UDim2.new(0.0199999996, 0, 0.217999995, 0)
     SideBar.Size = UDim2.new(0, 120, 0, 185)
@@ -296,7 +297,7 @@ function DEVIL_UI_Library_Mobile:CreateWindow(GuiName, GameName)
         newPage.Name = "newPage"
         newPage.Parent = pagesFolder
         newPage.Active = true
-        newPage.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        newPage.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
         newPage.BorderSizePixel = 0
         newPage.Position = UDim2.new(-0.0290697813, 10, -0.00233905017, 0)
         newPage.Size = UDim2.new(0, 355, 0, 185)
@@ -343,7 +344,7 @@ function DEVIL_UI_Library_Mobile:CreateWindow(GuiName, GameName)
 
         allPages.Name = "allPages"
         allPages.Parent = Main
-        allPages.BackgroundColor3 = Color3.fromRGB(100, 0, 100)
+        allPages.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
         allPages.BackgroundTransparency = 1.000
         allPages.BorderSizePixel = 0
         allPages.Position = UDim2.new(0.270000011, 0, 0.216000006, 0)
@@ -374,7 +375,7 @@ function DEVIL_UI_Library_Mobile:CreateWindow(GuiName, GameName)
                     end
                 end
                 game.TweenService:Create(tabButton, TweenInfo.new(0.2, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
-                    BackgroundColor3 = Color3.fromRGB(42, 2, 91) -- We animate other Tab Buttons and making the current one seem Checked
+                    BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- We animate other Tab Buttons and making the current one seem Checked
                 }):Play()
             end
         end
@@ -1049,7 +1050,7 @@ function DEVIL_UI_Library_PC:CreateWindow(GuiName, GameName)
     
     Main.Name = "Main"
     Main.Parent = ScreenGui
-    Main.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    Main.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     Main.BorderColor3 = Color3.fromRGB(255, 255, 255)
     Main.BorderSizePixel = 2
     Main.Position = UDim2.new(0.5, -250, 0.5, -150)
@@ -1058,7 +1059,7 @@ function DEVIL_UI_Library_PC:CreateWindow(GuiName, GameName)
     
     GameNameFrame.Name = "GameNameFrame"
     GameNameFrame.Parent = Main
-    GameNameFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    GameNameFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     GameNameFrame.BorderSizePixel = 0
     GameNameFrame.Size = UDim2.new(0, 500, 0, 40)
     GameNameFrame.ZIndex = 999999999
