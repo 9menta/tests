@@ -139,9 +139,8 @@ function DEVIL_UI_Library_Mobile:CreateWindow(GuiName, GameName)
     mainCorner.Parent = Main
 
     SideBar.Name = "SideBar"
-    SideBar.Parent = Main
-    SideBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    SideBar.BackgroundTransparency = 1.000
+    SideBar.Parent = MainSideBar.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+    SideBar.BackgroundTransparency = 0.8
     SideBar.BorderSizePixel = 0
     SideBar.Position = UDim2.new(0.0199999996, 0, 0.217999995, 0)
     SideBar.Size = UDim2.new(0, 120, 0, 185)
@@ -344,8 +343,7 @@ function DEVIL_UI_Library_Mobile:CreateWindow(GuiName, GameName)
 
         allPages.Name = "allPages"
         allPages.Parent = Main
-        allPages.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        allPages.BackgroundTransparency = 1.000
+        allPages.BackgroundColor3 = Color3.fromRGB(100, 0, 100)
         allPages.BorderSizePixel = 0
         allPages.Position = UDim2.new(0.270000011, 0, 0.216000006, 0)
         allPages.Size = UDim2.new(0, 355, 0, 185)
@@ -375,7 +373,7 @@ function DEVIL_UI_Library_Mobile:CreateWindow(GuiName, GameName)
                     end
                 end
                 game.TweenService:Create(tabButton, TweenInfo.new(0.2, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
-                    BackgroundColor3 = Color3.fromRGB(100, 0, 100) -- We animate other Tab Buttons and making the current one seem Checked
+                    BackgroundColor3 = Color3.fromRGB(42, 2, 91) -- We animate other Tab Buttons and making the current one seem Checked
                 }):Play()
             end
         end
