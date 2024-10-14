@@ -344,6 +344,7 @@ function DEVIL_UI_Library_Mobile:CreateWindow(GuiName, GameName)
         allPages.Name = "allPages"
         allPages.Parent = Main
         allPages.BackgroundColor3 = Color3.fromRGB(100, 0, 100)
+        allPages.BackgroundTransparency = 1.000
         allPages.BorderSizePixel = 0
         allPages.Position = UDim2.new(0.270000011, 0, 0.216000006, 0)
         allPages.Size = UDim2.new(0, 355, 0, 185)
