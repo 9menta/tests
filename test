@@ -375,7 +375,7 @@ function DEVIL_UI_Library_Mobile:CreateWindow(GuiName, GameName)
                     end
                 end
                 game.TweenService:Create(tabButton, TweenInfo.new(0.2, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
-                    BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- We animate other Tab Buttons and making the current one seem Checked
+                    BackgroundColor3 = Color3.fromRGB(100, 0, 100) -- We animate other Tab Buttons and making the current one seem Checked
                 }):Play()
             end
         end
