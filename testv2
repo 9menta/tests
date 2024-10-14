@@ -1050,7 +1050,7 @@ function DEVIL_UI_Library_PC:CreateWindow(GuiName, GameName)
     
     Main.Name = "Main"
     Main.Parent = ScreenGui
-    Main.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    Main.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     Main.BorderColor3 = Color3.fromRGB(255, 255, 255)
     Main.BorderSizePixel = 2
     Main.Position = UDim2.new(0.5, -250, 0.5, -150)
@@ -1059,14 +1059,14 @@ function DEVIL_UI_Library_PC:CreateWindow(GuiName, GameName)
     
     GameNameFrame.Name = "GameNameFrame"
     GameNameFrame.Parent = Main
-    GameNameFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    GameNameFrame.BackgroundColor3 = Color3.fromRGB(41, 3, 89)
     GameNameFrame.BorderSizePixel = 0
     GameNameFrame.Size = UDim2.new(0, 500, 0, 40)
     GameNameFrame.ZIndex = 999999999
     
     HubName.Name = "HubName"
     HubName.Parent = GameNameFrame
-    HubName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    HubName.BackgroundColor3 = Color3.fromRGB(41, 3, 89)
     HubName.BackgroundTransparency = 1.000
     HubName.BorderSizePixel = 0
     HubName.Position = UDim2.new(0.0199999996, 0, 0, 0)
@@ -1265,7 +1265,7 @@ function DEVIL_UI_Library_PC:CreateWindow(GuiName, GameName)
                     end
                 end
                 game.TweenService:Create(tabButton, TweenInfo.new(0.2, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
-                    BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- We animate other Tab Buttons and making the current one seem Checked
+                    BackgroundColor3 = Color3.fromRGB(41, 3, 89) -- We animate other Tab Buttons and making the current one seem Checked
                 }):Play()
             end
         end
@@ -1476,7 +1476,7 @@ function DEVIL_UI_Library_PC:CreateWindow(GuiName, GameName)
 				    callback(tog) -- Callbacks whenever we toggle
                     if tog then 
                         game.TweenService:Create(ToggleButton, TweenInfo.new(0.15, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
-                            BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+                            BackgroundColor3 = Color3.fromRGB(41, 3, 89)
                         }):Play()
                         --- We put our animation here when the toggle is on
                     else
@@ -1531,7 +1531,7 @@ function DEVIL_UI_Library_PC:CreateWindow(GuiName, GameName)
             SiderMainTextButton.Size = UDim2.new(0, 320, 0, 20)
             SiderMainTextButton.Font = Enum.Font.SourceSans
             SiderMainTextButton.Text = ""
-            SiderMainTextButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+            SiderMainTextButton.TextColor3 = Color3.fromRGB(41, 3, 89)
             SiderMainTextButton.TextSize = 14.000
             SiderMainTextButton.TextTransparency = 1.000
     
@@ -1549,7 +1549,7 @@ function DEVIL_UI_Library_PC:CreateWindow(GuiName, GameName)
     
             MainSlidingBar.Name = "MainSlidingBar"
             MainSlidingBar.Parent = SlidingBar
-            MainSlidingBar.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+            MainSlidingBar.BackgroundColor3 = Color3.fromRGB(41, 3, 89)
             MainSlidingBar.Position = UDim2.new(-0.00050403201, 0, -0.00384615362, 0)
             MainSlidingBar.Size = UDim2.new(0, 155, 0, 13)
     
