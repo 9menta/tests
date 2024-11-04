@@ -66,7 +66,8 @@ local ESP_SETTINGS = {
         CharSize = Vector2.new(4, 6),
         Teamcheck = true, 
         WallCheck = false,
-        Enabled = true -- Global toggle for the ESP
+        Enabled = true,
+        MaxDistance = 1000 -- Nova configuração
     }
 }
 
