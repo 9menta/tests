@@ -199,38 +199,21 @@ local function onCharacterAdded(player)
     end
 end
 
--- Conectar eventos de personagem para todos os jogadores
-for _, player in ipairs(Players:GetPlayers()) do
-    if player ~= localPlayer then
-        player.CharacterAdded:Connect(function()
-            onCharacterAdded(player)
-        end)
-    end
-end
-
--- Conectar eventos para novos jogadores
-Players.PlayerAdded:Connect(function(player)
-    if player ~= localPlayer then
-        createEsp(player)
-        player.CharacterAdded:Connect(function()
-            onCharacterAdded(player)
-        end)
-    end
-end)
-
--- Função isTeamMate corrigida
-local function isTeamMate(player)
-    if not ESP_SETTINGS.General.Teamcheck then
-        return false
-    end
-    
-    return player.Team and localPlayer.Team and player.Team == localPlayer.Team
-end
-
--- Função updateEsp atualizada
+-- Função updateEsp corrigida
 local function updateEsp()
-    if not ESP_SETTINGS.General.Enabled then return end -- Verificação inicial global
+    if not ESP_SETTINGS.General.Enabled then 
+        -- Esconder todas as ESPs quando desativado
+        for _, esp in pairs(cache) do
+            for _, drawing in pairs(esp) do
+                if type(drawing) ~= "table" then
+                    drawing.Visible = false
+                end
+            end
+        end
+        return 
+    end
     
+    -- Atualizar para todos os jogadores
     for _, player in ipairs(Players:GetPlayers()) do
         if player == localPlayer then continue end
         
@@ -245,42 +228,44 @@ local function updateEsp()
         local head = character and character:FindFirstChild("Head")
         local humanoid = character and character:FindFirstChild("Humanoid")
         
+        -- Função para esconder ESP
         local function hideEsp()
-            if not esp then return end
-            
             for _, drawing in pairs(esp) do
-                if type(drawing) == "table" then
-                    for _, line in pairs(drawing) do
-                        if typeof(line) == "table" and line[1] then
-                            line[1].Visible = false
-                        elseif typeof(line) == "Instance" then
-                            line.Visible = false
-                        end
-                    end
-                elseif drawing.Visible ~= nil then
+                if type(drawing) ~= "table" then
                     drawing.Visible = false
                 end
             end
+            for _, line in ipairs(esp.skeletonLines) do
+                line[1].Visible = false
+            end
+            for _, line in ipairs(esp.boxLines) do
+                line.Visible = false
+            end
+            esp.health.Visible = false
+            esp.healthOutline.Visible = false
         end
         
-        if not (character and rootPart and head and humanoid and ESP_SETTINGS.General.Enabled) then
+        -- Verificar condições para mostrar ESP
+        if not (character and rootPart and head and humanoid) then
             hideEsp()
             continue
         end
         
+        -- Verificar distância
         local distance = (camera.CFrame.p - rootPart.Position).Magnitude
         if distance > ESP_SETTINGS.General.MaxDistance then
             hideEsp()
             continue
         end
         
+        -- Verificar team
         if isTeamMate(player) then
             hideEsp()
             continue
         end
         
+        -- Verificar se está na tela
         local position, onScreen = camera:WorldToViewportPoint(rootPart.Position)
-        
         if not onScreen then
             hideEsp()
             continue
@@ -443,59 +428,80 @@ local function updateEsp()
         else
             esp.tracer.Visible = false
         end
-    else
-        for _, drawing in pairs(esp) do
-            drawing.Visible = false
-        end
-        for _, lineData in ipairs(esp.skeletonLines) do
-            local skeletonLine = lineData[1]
-            skeletonLine:Remove()
-        end
-        esp.skeletonLines = {}
-        for _, line in ipairs(esp.boxLines) do
-            line:Remove()
-        end
-        esp.boxLines = {}
     end
 end
 
--- Inicialização atualizada
+-- Função para lidar com personagem adicionado
+local function onCharacterAdded(player)
+    if player == localPlayer then return end
+    
+    -- Remover ESP antiga
+    removeEsp(player)
+    -- Criar nova ESP
+    createEsp(player)
+    
+    -- Aguardar carregamento do personagem
+    local character = player.Character
+    if character then
+        local humanoid = character:WaitForChild("Humanoid", 3)
+        if humanoid then
+            humanoid.Died:Connect(function()
+                local esp = cache[player]
+                if esp then
+                    for _, drawing in pairs(esp) do
+                        if type(drawing) ~= "table" then
+                            drawing.Visible = false
+                        end
+                    end
+                end
+            end)
+        end
+    end
+end
+
+-- Simplificar a função init
 local function init()
     -- Limpar cache existente
     for player, esp in pairs(cache) do
         removeEsp(player)
     end
     
-    -- Criar ESP para jogadores existentes
+    -- Configurar para jogadores existentes
     for _, player in ipairs(Players:GetPlayers()) do
         if player ~= localPlayer then
             createEsp(player)
+            player.CharacterAdded:Connect(function()
+                onCharacterAdded(player)
+            end)
         end
     end
     
-    -- Conectar eventos
-    Players.PlayerAdded:Connect(function(player)
-        if player ~= localPlayer then
-            createEsp(player)
-        end
-    end)
-    
-    Players.PlayerRemoving:Connect(function(player)
-        removeEsp(player)
-    end)
-    
-    -- Conectar updateEsp ao RenderStepped
-    RunService:UnbindFromRenderStep("ESP") -- Remove conexão anterior se existir
+    -- Reconectar o RenderStep
+    RunService:UnbindFromRenderStep("ESP")
     RunService:BindToRenderStep("ESP", 1, updateEsp)
 end
 
--- Chamar inicialização
+-- Inicialização
 init()
+
+-- Conectar eventos globais uma única vez
+Players.PlayerAdded:Connect(function(player)
+    if player ~= localPlayer then
+        createEsp(player)
+        player.CharacterAdded:Connect(function()
+            onCharacterAdded(player)
+        end)
+    end
+end)
+
+Players.PlayerRemoving:Connect(function(player)
+    removeEsp(player)
+end
 
 -- Atualizar função onRoundStateChanged
 local function onRoundStateChanged()
     task.wait(1)
-    init() -- Reinicializa toda a ESP
+    init()
 end
 
 -- Conectar ao evento de mudança de round (específico para Arsenal)
