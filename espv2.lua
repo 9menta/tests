@@ -243,23 +243,23 @@ local function updateEsp()
                 local rootPart = character:FindFirstChild("HumanoidRootPart")
                 local distance = (camera.CFrame.p - rootPart.Position).Magnitude
                 
-                -- Verificar distância máxima
-                if distance > ESP_SETTINGS.General.MaxDistance then
+                -- Verificar distância máxima e team
+                if distance > ESP_SETTINGS.General.MaxDistance or isTeamMate(player) then
                     for _, drawing in pairs(esp) do
                         if type(drawing) ~= "table" then
                             drawing.Visible = false
                         end
                     end
-                    continue
-                end
-                
-                -- Verificar team
-                if isTeamMate(player) then
-                    for _, drawing in pairs(esp) do
-                        if type(drawing) ~= "table" then
-                            drawing.Visible = false
-                        end
+                    -- Remover linhas de esqueleto e caixa
+                    for _, lineData in ipairs(esp.skeletonLines) do
+                        local skeletonLine = lineData[1]
+                        skeletonLine:Remove()
                     end
+                    esp.skeletonLines = {}
+                    for _, line in ipairs(esp.boxLines) do
+                        line:Remove()
+                    end
+                    esp.boxLines = {}
                     continue
                 end
                 
