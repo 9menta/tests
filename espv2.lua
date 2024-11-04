@@ -64,7 +64,7 @@ local ESP_SETTINGS = {
     },
     General = {
         CharSize = Vector2.new(4, 6),
-        Teamcheck = true, 
+        Teamcheck = false, 
         WallCheck = false,
         Enabled = false,
         MaxDistance = 1000 -- Nova configuração
@@ -122,7 +122,8 @@ local function createEsp(player)
             Color = Color3.new(1, 1, 1),
             Size = 12,
             Outline = true,
-            Center = true
+            Center = true,
+            Visible = ESP_SETTINGS.Distance.Show
         }),
         tracer = create("Line", {
             Thickness = ESP_SETTINGS.Tracer.Thickness,
@@ -212,7 +213,20 @@ Players.PlayerAdded:Connect(function(player)
     end
 end)
 
--- Modificar a função updateEsp para verificar personagens válidos
+-- Adicionar função de verificação de time
+local function isTeamMate(player)
+    if not ESP_SETTINGS.General.Teamcheck then
+        return false
+    end
+    
+    -- Verificação específica para Arsenal
+    local playerTeam = player.Team
+    local localTeam = localPlayer.Team
+    
+    return playerTeam and localTeam and playerTeam == localTeam
+end
+
+-- Modificar a função updateEsp
 local function updateEsp()
     local players = Players:GetPlayers()
     for _, player in ipairs(players) do
@@ -223,9 +237,32 @@ local function updateEsp()
                 esp = cache[player]
             end
             
+            -- Verificar distância e team
             local character = player.Character
-            if character and character:FindFirstChild("Humanoid") and character:FindFirstChild("HumanoidRootPart") then
+            if character and character:FindFirstChild("HumanoidRootPart") then
                 local rootPart = character:FindFirstChild("HumanoidRootPart")
+                local distance = (camera.CFrame.p - rootPart.Position).Magnitude
+                
+                -- Verificar distância máxima
+                if distance > ESP_SETTINGS.General.MaxDistance then
+                    for _, drawing in pairs(esp) do
+                        if type(drawing) ~= "table" then
+                            drawing.Visible = false
+                        end
+                    end
+                    continue
+                end
+                
+                -- Verificar team
+                if isTeamMate(player) then
+                    for _, drawing in pairs(esp) do
+                        if type(drawing) ~= "table" then
+                            drawing.Visible = false
+                        end
+                    end
+                    continue
+                end
+                
                 local head = character:FindFirstChild("Head")
                 local humanoid = character:FindFirstChild("Humanoid")
                 local isBehindWall = ESP_SETTINGS.General.WallCheck and isPlayerBehindWall(player)
@@ -463,4 +500,25 @@ Players.PlayerRemoving:Connect(function(player)
 end)
 
 RunService.RenderStepped:Connect(updateEsp)
+
+-- Adicionar listener para mudanças de round/mapa no Arsenal
+local function onRoundStateChanged()
+    -- Pequeno delay para garantir que os personagens foram recarregados
+    task.wait(1)
+    
+    -- Recriar ESP para todos os jogadores
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= localPlayer then
+            removeEsp(player)
+            createEsp(player)
+        end
+    end
+end
+
+-- Conectar ao evento de mudança de round (específico para Arsenal)
+if game.PlaceId == 286090429 then -- ID do Arsenal
+    local roundState = game:GetService("ReplicatedStorage"):WaitForChild("wkspc"):WaitForChild("Status")
+    roundState.Changed:Connect(onRoundStateChanged)
+end
+
 return ESP_SETTINGS
