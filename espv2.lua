@@ -200,17 +200,25 @@ for _, player in ipairs(Players:GetPlayers()) do
         player.CharacterAdded:Connect(function()
             onCharacterAdded(player)
         end)
+        -- Conectar evento para quando o personagem morre
+        if player.Character then
+            onCharacterAdded(player)
+        end
     end
 end
 
 -- Conectar eventos para novos jogadores
 Players.PlayerAdded:Connect(function(player)
     if player ~= localPlayer then
-        createEsp(player)
         player.CharacterAdded:Connect(function()
             onCharacterAdded(player)
         end)
     end
+end)
+
+-- Remover ESP quando o jogador sai
+Players.PlayerRemoving:Connect(function(player)
+    removeEsp(player)
 end)
 
 -- Adicionar função de verificação de time
