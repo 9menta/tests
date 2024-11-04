@@ -35,7 +35,7 @@ local ESP_SETTINGS = {
     Box = {
         OutlineColor = Color3.new(0, 0, 0),
         Color = Color3.new(1, 1, 1), 
-        Enabled = true, -- Toggle for the box ESP
+        Enabled = false, -- Toggle for the box ESP
         Show = true, -- Show/hide the box
         Type = "2D" -- (2D, Corner)
     },
@@ -66,7 +66,7 @@ local ESP_SETTINGS = {
         CharSize = Vector2.new(4, 6),
         Teamcheck = true, 
         WallCheck = false,
-        Enabled = true,
+        Enabled = false,
         MaxDistance = 1000 -- Nova configuração
     }
 }
