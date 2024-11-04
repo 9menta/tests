@@ -213,23 +213,16 @@ Players.PlayerAdded:Connect(function(player)
     end
 end)
 
--- Adicionar função de verificação de time
+-- Função isTeamMate corrigida
 local function isTeamMate(player)
     if not ESP_SETTINGS.General.Teamcheck then
         return false
     end
     
-    local playerTeam = player.Team
-    local localTeam = localPlayer.Team
-    
-    if playerTeam and localTeam then
-        return playerTeam == localTeam
-    end
-    
-    return false
+    return player.Team and localPlayer.Team and player.Team == localPlayer.Team
 end
 
--- Modificar a função updateEsp
+-- Atualizar a função updateEsp para garantir que a barra de vida também suma
 local function updateEsp()
     for _, player in ipairs(Players:GetPlayers()) do
         if player ~= localPlayer then
@@ -244,24 +237,8 @@ local function updateEsp()
             local head = character and character:FindFirstChild("Head")
             local humanoid = character and character:FindFirstChild("Humanoid")
             
-            -- Verificações iniciais
-            if not (character and rootPart and head and humanoid) then
-                for _, drawing in pairs(esp) do
-                    if type(drawing) ~= "table" then
-                        drawing.Visible = false
-                    end
-                end
-                return
-            end
-            
-            -- Verificar distância
-            local distance = (camera.CFrame.p - rootPart.Position).Magnitude
-            local isInRange = distance <= ESP_SETTINGS.General.MaxDistance
-            local isTeam = isTeamMate(player)
-            local isBehindWall = ESP_SETTINGS.General.WallCheck and isPlayerBehindWall(player)
-            
-            -- Verificar se deve mostrar ESP
-            if not isInRange or isTeam or not ESP_SETTINGS.General.Enabled or isBehindWall then
+            -- Função auxiliar para esconder todos os elementos da ESP
+            local function hideEsp()
                 for _, drawing in pairs(esp) do
                     if type(drawing) ~= "table" then
                         drawing.Visible = false
@@ -273,6 +250,25 @@ local function updateEsp()
                 for _, line in ipairs(esp.boxLines) do
                     line.Visible = false
                 end
+                -- Garantir que a barra de vida também suma
+                esp.health.Visible = false
+                esp.healthOutline.Visible = false
+            end
+            
+            -- Verificações iniciais
+            if not (character and rootPart and head and humanoid) then
+                hideEsp()
+                return
+            end
+            
+            -- Verificar distância e team
+            local distance = (camera.CFrame.p - rootPart.Position).Magnitude
+            local isInRange = distance <= ESP_SETTINGS.General.MaxDistance
+            local isTeam = isTeamMate(player)
+            local isBehindWall = ESP_SETTINGS.General.WallCheck and isPlayerBehindWall(player)
+            
+            if not isInRange or isTeam or not ESP_SETTINGS.General.Enabled or isBehindWall then
+                hideEsp()
                 return
             end
             
@@ -481,15 +477,18 @@ end)
 
 RunService.RenderStepped:Connect(updateEsp)
 
--- Adicionar listener para mudanças de round/mapa no Arsenal
+-- Atualizar a função onRoundStateChanged para lidar melhor com mudanças de mapa
 local function onRoundStateChanged()
-    -- Pequeno delay para garantir que os personagens foram recarregados
-    task.wait(1)
+    task.wait(2) -- Aumentado o delay para dar mais tempo de carregar
+    
+    -- Limpar todas as ESPs existentes
+    for player, esp in pairs(cache) do
+        removeEsp(player)
+    end
     
     -- Recriar ESP para todos os jogadores
     for _, player in ipairs(Players:GetPlayers()) do
         if player ~= localPlayer then
-            removeEsp(player)
             createEsp(player)
         end
     end
@@ -499,6 +498,14 @@ end
 if game.PlaceId == 286090429 then -- ID do Arsenal
     local roundState = game:GetService("ReplicatedStorage"):WaitForChild("wkspc"):WaitForChild("Status")
     roundState.Changed:Connect(onRoundStateChanged)
+    
+    -- Adicionar conexão para quando o mapa muda
+    workspace.ChildAdded:Connect(function(child)
+        if child.Name == "Map" then
+            task.wait(2)
+            onRoundStateChanged()
+        end
+    end)
 end
 
 return ESP_SETTINGS
