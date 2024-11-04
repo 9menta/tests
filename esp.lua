@@ -12,6 +12,8 @@ local ESP = {
     AttachShift = 1,
     TeamMates = true,
     Players = true,
+    Filled = false,
+    HealthBar = false,
     
     Objects = setmetatable({}, {__mode="kv"}),
     Overrides = {}
@@ -211,12 +213,40 @@ function boxBase:Update()
                 self.Components.Quad.PointC = Vector2.new(BottomLeft.X, BottomLeft.Y)
                 self.Components.Quad.PointD = Vector2.new(BottomRight.X, BottomRight.Y)
                 self.Components.Quad.Color = color
-            else
-                self.Components.Quad.Visible = false
+                self.Components.Quad.Filled = ESP.Filled
             end
         end
     else
         self.Components.Quad.Visible = false
+    end
+
+    if ESP.HealthBar then
+        local humanoid = self.Object:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            local health = humanoid.Health
+            local maxHealth = humanoid.MaxHealth
+            local healthPercent = health / maxHealth
+
+            local HealthBarPos, Vis7 = WorldToViewportPoint(cam, (locs.TopLeft.p + locs.TopRight.p) / 2)
+            
+            if Vis7 then
+                self.Components.HealthBarOutline.Visible = true
+                self.Components.HealthBarOutline.From = Vector2.new(HealthBarPos.X - 25, HealthBarPos.Y - 30)
+                self.Components.HealthBarOutline.To = Vector2.new(HealthBarPos.X + 25, HealthBarPos.Y - 30)
+                self.Components.HealthBarOutline.Color = Color3.new(0, 0, 0)
+
+                self.Components.HealthBar.Visible = true
+                self.Components.HealthBar.From = Vector2.new(HealthBarPos.X - 25, HealthBarPos.Y - 30)
+                self.Components.HealthBar.To = Vector2.new(HealthBarPos.X - 25 + (50 * healthPercent), HealthBarPos.Y - 30)
+                self.Components.HealthBar.Color = Color3.fromRGB(255 * (1 - healthPercent), 255 * healthPercent, 0)
+            else
+                self.Components.HealthBarOutline.Visible = false
+                self.Components.HealthBar.Visible = false
+            end
+        end
+    else
+        self.Components.HealthBarOutline.Visible = false
+        self.Components.HealthBar.Visible = false
     end
 
     if ESP.Names then
@@ -310,6 +340,19 @@ function ESP:Add(obj, options)
         Transparency = 1,
         Visible = self.Enabled and self.Tracers
     })
+
+    box.Components["HealthBarOutline"] = Draw("Line", {
+        Thickness = ESP.Thickness + 2,
+        Transparency = 1,
+        Visible = self.Enabled and self.HealthBar
+    })
+    
+    box.Components["HealthBar"] = Draw("Line", {
+        Thickness = ESP.Thickness,
+        Transparency = 1,
+        Visible = self.Enabled and self.HealthBar
+    })
+
     self.Objects[obj] = box
     
     obj.AncestryChanged:Connect(function(_, parent)
