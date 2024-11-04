@@ -174,6 +174,45 @@ local function getBones(character)
     end
 end
 
+-- Função para atualizar ESP quando um jogador respawna
+local function onCharacterAdded(player)
+    if player ~= localPlayer then
+        -- Remove ESP antiga se existir
+        removeEsp(player)
+        -- Cria nova ESP
+        createEsp(player)
+        
+        -- Aguarda um frame para garantir que o personagem está totalmente carregado
+        RunService.RenderStepped:Wait()
+        
+        -- Atualiza a ESP imediatamente
+        local esp = cache[player]
+        if esp then
+            updateEsp()
+        end
+    end
+end
+
+-- Conectar eventos de personagem para todos os jogadores
+for _, player in ipairs(Players:GetPlayers()) do
+    if player ~= localPlayer then
+        player.CharacterAdded:Connect(function()
+            onCharacterAdded(player)
+        end)
+    end
+end
+
+-- Conectar eventos para novos jogadores
+Players.PlayerAdded:Connect(function(player)
+    if player ~= localPlayer then
+        createEsp(player)
+        player.CharacterAdded:Connect(function()
+            onCharacterAdded(player)
+        end)
+    end
+end)
+
+-- Modificar a função updateEsp para verificar personagens válidos
 local function updateEsp()
     local players = Players:GetPlayers()
     for _, player in ipairs(players) do
@@ -183,8 +222,9 @@ local function updateEsp()
                 createEsp(player)
                 esp = cache[player]
             end
-            local character, team = player.Character, player.Team
-            if character and (not ESP_SETTINGS.General.Teamcheck or (team and team ~= localPlayer.Team)) then
+            
+            local character = player.Character
+            if character and character:FindFirstChild("Humanoid") and character:FindFirstChild("HumanoidRootPart") then
                 local rootPart = character:FindFirstChild("HumanoidRootPart")
                 local head = character:FindFirstChild("Head")
                 local humanoid = character:FindFirstChild("Humanoid")
@@ -392,6 +432,15 @@ local function updateEsp()
                     line:Remove()
                 end
                 esp.boxLines = {}
+            end
+        else
+            -- Se o personagem não estiver pronto, esconde a ESP
+            if esp then
+                for _, drawing in pairs(esp) do
+                    if type(drawing) ~= "table" then
+                        drawing.Visible = false
+                    end
+                end
             end
         end
     end
