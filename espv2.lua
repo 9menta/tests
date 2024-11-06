@@ -39,14 +39,6 @@ local function UpdateColorBasedOnTeam(library, targetPlayer)
     end
 end
 
--- Variável global para controlar o estado das ESPs
-local ESPEnabled = false
-
--- Função para ativar/desativar ESP
-function ToggleESP(state)
-    ESPEnabled = state
-end
-
 for _, v in pairs(game:GetService("Players"):GetPlayers()) do
     local library = {
         name = NewText(settings.Color, settings.Size, settings.Transparency),
@@ -56,11 +48,6 @@ for _, v in pairs(game:GetService("Players"):GetPlayers()) do
 local function ESP()
     local connection
     connection = game:GetService("RunService").RenderStepped:Connect(function()
-        if not ESPEnabled then
-            Visibility(false, library)
-            return
-        end
-        
         if v.Character and v.Character:FindFirstChild("Humanoid") and v.Character:FindFirstChild("HumanoidRootPart") and v.Name ~= player.Name and v.Character.Humanoid.Health > 0 then
             -- Adiciona a verificação do time
             if v.TeamColor and player.TeamColor and v.TeamColor == player.TeamColor then
@@ -109,11 +96,6 @@ game.Players.PlayerAdded:Connect(function(newplr)
     local function ESP()
     local connection
     connection = game:GetService("RunService").RenderStepped:Connect(function()
-        if not ESPEnabled then
-            Visibility(false, library)
-            return
-        end
-        
         if v.Character and v.Character:FindFirstChild("Humanoid") and v.Character:FindFirstChild("HumanoidRootPart") and v.Name ~= player.Name and v.Character.Humanoid.Health > 0 then
             -- Verificação para ignorar o jogador atual e jogadores do mesmo time
             if v.TeamColor and player.TeamColor and v.TeamColor == player.TeamColor then
@@ -159,6 +141,7 @@ game.Players.PlayerAdded:Connect(function(newplr)
 end
     coroutine.wrap(ESP)()
 end)
+-- Continue with your code for boxes and skeletons...
 
 -- Settings
 local Settings = {
@@ -222,11 +205,6 @@ local function Main(plr)
     local function Updater()
         local c
         c = game:GetService("RunService").RenderStepped:Connect(function()
-            if not ESPEnabled then
-                Vis(Library, false)
-                return
-            end
-            
             if plr.Character ~= nil and plr.Character:FindFirstChild("Humanoid") ~= nil and plr.Character:FindFirstChild("HumanoidRootPart") ~= nil and plr.Character.Humanoid.Health > 0 then
                 if Settings.Team_Check and plr.TeamColor == Player.TeamColor then
                     Vis(Library, false) -- Ignora jogadores do mesmo time
@@ -314,7 +292,5 @@ for i, v in pairs(game:GetService("Players"):GetPlayers()) do
 end
 
 game:GetService("Players").PlayerAdded:Connect(function(newplr)
-    if newplr ~= Player then
-        Main(newplr)
-    end
+    coroutine.wrap(Main)(newplr)
 end)
