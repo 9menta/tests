@@ -7,7 +7,7 @@ local localPlayer = Players.LocalPlayer
 local settings = {
     -- Configurações gerais
     Enabled = false,
-    TeamCheck = false,
+    TeamCheck = true,
     
     -- Configurações de nome
     Names = {
@@ -15,7 +15,7 @@ local settings = {
         Size = 20,
         Color = Color3.fromRGB(255, 0, 0),
         Transparency = 1,
-        AutoScale = false,
+        AutoScale = true,
         ShowDistance = true
     },
     
@@ -192,27 +192,53 @@ ESPModule.settings = settings
 ESPModule.ESP = {
     Toggle = function(state)
         settings.Enabled = state
+        Settings.Enabled = state  -- Para as boxes
     end,
     SetTeamCheck = function(state)
         settings.TeamCheck = state
+        Settings.Team_Check = state  -- Para as boxes
     end,
     SetNames = function(state)
-        settings.Names.Enabled = state
+        settings.Names = state
+        -- Atualizar visibilidade dos nomes
+        for _, v in pairs(game:GetService("Players"):GetPlayers()) do
+            if v.Name ~= player.Name then
+                local library = {
+                    name = NewText(settings.Color, settings.Size, settings.Transparency),
+                    health = NewText(Color3.fromRGB(0, 255, 0), settings.Size - 5, settings.Transparency)
+                }
+                Visibility(state, library)
+            end
+        end
     end,
     SetBoxes = function(state)
-        settings.Boxes.Enabled = state
+        settings.Boxes = state
+        -- Atualizar visibilidade das boxes
+        for _, plr in pairs(game:GetService("Players"):GetPlayers()) do
+            if plr.Name ~= player.Name then
+                Main(plr)  -- Recriar as boxes
+            end
+        end
     end,
     SetHealth = function(state)
-        settings.Health.Enabled = state
+        settings.Health = state
+        -- Atualizar visibilidade da vida
+        for _, v in pairs(game:GetService("Players"):GetPlayers()) do
+            if v.Name ~= player.Name then
+                local library = {
+                    name = NewText(settings.Color, settings.Size, settings.Transparency),
+                    health = NewText(Color3.fromRGB(0, 255, 0), settings.Size - 5, settings.Transparency)
+                }
+                library.health.Visible = state
+            end
+        end
     end,
-    SetNameSize = function(value)
-        settings.Names.Size = value
+    SetSize = function(value)
+        settings.Size = value
     end,
-    SetBoxColor = function(color)
-        settings.Boxes.Color = color
-    end,
-    SetNameColor = function(color)
-        settings.Names.Color = color
+    SetColor = function(color)
+        settings.Color = color
+        Settings.Box_Color = color  -- Para as boxes
     end
 }
 
