@@ -65,10 +65,10 @@ local function ESP()
             return
         end
 
-        if v.Character and v.Character:FindFirstChild("Humanoid") and v.Character:FindFirstChild("HumanoidRootPart") and v.Name ~= player.Name and v.Character.Humanoid.Health > 0 then
-            -- Adiciona a verificação do time
-            if v.TeamColor and player.TeamColor and v.TeamColor == player.TeamColor then
-                Visibility(false, library) -- Ignora jogadores do mesmo time
+        if v and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character:FindFirstChild("HumanoidRootPart") and v.Name ~= player.Name and v.Character.Humanoid.Health > 0 then
+            -- Verificação de time
+            if settings.Team_Check and v.TeamColor and player.TeamColor and v.TeamColor == player.TeamColor then
+                Visibility(false, library)
                 return
             end
 
@@ -78,40 +78,42 @@ local function ESP()
                 if settings.Names_Enabled then
                     library.name.Text = v.Name
                     library.name.Position = Vector2.new(HumanoidRootPart_Pos.X, HumanoidRootPart_Pos.Y - 50)
-                    library.name.Visible = settings.Enabled
+                    library.name.Visible = true
                 else
                     library.name.Visible = false
                 end
 
-                -- Vida
+                -- Vida (Corrigido para pegar a vida atual)
                 if settings.Health_Enabled then
-                    library.health.Text = "Health: " .. tostring(math.floor(v.Character.Humanoid.Health)) .. "/" .. tostring(math.floor(v.Character.Humanoid.MaxHealth))
-                    library.health.Position = Vector2.new(HumanoidRootPart_Pos.X, HumanoidRootPart_Pos.Y - 35)
-                    library.health.Visible = settings.Enabled
+                    local humanoid = v.Character:FindFirstChild("Humanoid")
+                    if humanoid then
+                        local health = math.floor(humanoid.Health)
+                        local maxHealth = math.floor(humanoid.MaxHealth)
+                        library.health.Text = "Health: " .. tostring(health) .. "/" .. tostring(maxHealth)
+                        library.health.Position = Vector2.new(HumanoidRootPart_Pos.X, HumanoidRootPart_Pos.Y - 35)
+                        library.health.Visible = true
+                    end
                 else
                     library.health.Visible = false
                 end
 
-                -- Boxes (na função Main)
+                -- Boxes
                 if settings.Boxes_Enabled then
-                    Vis(Library, settings.Enabled)
-                else
-                    Vis(Library, false)
+                    -- Aqui você deve chamar a função Main para o jogador específico
+                    if not v.BoxESP then
+                        v.BoxESP = true
+                        coroutine.wrap(Main)(v)
+                    end
                 end
 
                 UpdateColorBasedOnTeam(library, v)
 
                 if settings.AutoScale then
-                    local distance = (Vector3.new(camera.CFrame.X, camera.CFrame.Y, camera.CFrame.Z) - v.Character.HumanoidRootPart.Position).magnitude
-                    local textsize = math.clamp(30 / distance, 15, 50) -- Ajuste aqui para um tamanho adequado
+                    local distance = (camera.CFrame.Position - v.Character.HumanoidRootPart.Position).Magnitude
+                    local textsize = math.clamp(30 / distance * 10, 15, 50)
                     library.name.Size = textsize
                     library.health.Size = textsize - 5
-                else 
-                    library.name.Size = settings.Size
-                    library.health.Size = settings.Size - 5
                 end
-
-                Visibility(true, library)
             else 
                 Visibility(false, library)
             end
@@ -139,7 +141,7 @@ game.Players.PlayerAdded:Connect(function(newplr)
             return
         end
 
-        if v.Character and v.Character:FindFirstChild("Humanoid") and v.Character:FindFirstChild("HumanoidRootPart") and v.Name ~= player.Name and v.Character.Humanoid.Health > 0 then
+        if v and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character:FindFirstChild("HumanoidRootPart") and v.Name ~= player.Name and v.Character.Humanoid.Health > 0 then
             -- Verificação para ignorar o jogador atual e jogadores do mesmo time
             if v.TeamColor and player.TeamColor and v.TeamColor == player.TeamColor then
                 Visibility(false, library) -- Ignora jogadores do mesmo time
@@ -224,6 +226,7 @@ end
 
 -- Função principal
 local function Main(plr)
+    if not settings.Boxes_Enabled then return end
     repeat wait() until plr.Character ~= nil and plr.Character:FindFirstChild("Humanoid") ~= nil
     local Library = {
         TL1 = NewLine(Settings.Box_Color, Settings.Box_Thickness),
@@ -362,9 +365,26 @@ ESPModule.ESP = {
     SetSize = function(value)
         settings.Size = value
     end,
-    SetColor = function(color)
-        settings.Color = color
+    SetColor = function(Color3)
+        settings.Color = Color3
     end
 }
+
+-- No módulo ESP, adicione uma função para limpar as boxes
+ESPModule.ESP.ClearBoxes = function()
+    for _, v in pairs(game:GetService("Players"):GetPlayers()) do
+        if v.BoxESP then
+            v.BoxESP = nil
+        end
+    end
+end
+
+-- Modifique a função ToggleBoxes
+ESPModule.ESP.ToggleBoxes = function(state)
+    settings.Boxes_Enabled = state
+    if not state then
+        ESPModule.ESP.ClearBoxes()
+    end
+end
 
 return ESPModule
