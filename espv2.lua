@@ -2,6 +2,9 @@ local ESPModule = {}
 
 local settings = {
     Enabled = false,
+    Names_Enabled = false,
+    Boxes_Enabled = false,
+    Health_Enabled = false,
     Color = Color3.fromRGB(255, 0, 0),
     Size = 20,
     Transparency = 1,
@@ -10,10 +13,7 @@ local settings = {
     Box_Thickness = 2,
     Team_Check = false,
     Team_Color = false,
-    Autothickness = true,
-    Names = false,
-    Boxes = false,
-    Health = false
+    Autothickness = true
 }
 
 local space = game:GetService("Workspace")
@@ -169,7 +169,7 @@ end)
 local Settings = {
     Box_Color = Color3.fromRGB(255, 255, 255), -- Branco sólido
     Box_Thickness = 2,
-    Team_Check = true, -- Ativar verificação de time
+    Team_Check = false, -- Ativar verificação de time
     Team_Color = false,
     Autothickness = true
 }
@@ -326,23 +326,23 @@ ESPModule.ESP = {
     Toggle = function(state)
         settings.Enabled = state
     end,
+    ToggleNames = function(state)
+        settings.Names_Enabled = state
+    end,
+    ToggleBoxes = function(state)
+        settings.Boxes_Enabled = state
+    end,
+    ToggleHealth = function(state)
+        settings.Health_Enabled = state
+    end,
     SetTeamCheck = function(state)
         settings.Team_Check = state
-    end,
-    SetNames = function(state)
-        settings.Names = state
-    end,
-    SetBoxes = function(state)
-        settings.Boxes = state
-    end,
-    SetHealth = function(state)
-        settings.Health = state
     end,
     SetSize = function(value)
         settings.Size = value
     end,
     SetColor = function(color)
-        settings.Color = color
+        settings.Box_Color = color
     end
 }
 
