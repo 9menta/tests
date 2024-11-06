@@ -50,49 +50,24 @@ local function ESP(plr, library)
             return
         end
         
-        if not plr or not plr.Parent or not library then
-            if connection then connection:Disconnect() end
+        if not plr.Character or not plr.Character:FindFirstChild("HumanoidRootPart") then
+            Visibility(false, library)
             return
         end
         
-        if plr.Character 
-            and plr.Character:FindFirstChild("Humanoid") 
-            and plr.Character:FindFirstChild("HumanoidRootPart") 
-            and plr.Name ~= player.Name 
-            and plr.Character.Humanoid.Health > 0 then
+        local humanoid = plr.Character:FindFirstChild("Humanoid")
+        if not humanoid then return end
+        
+        local HumanoidRootPart_Pos, OnScreen = camera:WorldToViewportPoint(plr.Character.HumanoidRootPart.Position)
+        
+        if OnScreen then
+            library.name.Text = plr.Name
+            library.name.Position = Vector2.new(HumanoidRootPart_Pos.X, HumanoidRootPart_Pos.Y - 50)
+            library.health.Text = "Health: " .. math.floor(humanoid.Health)
             
-            if v.TeamColor and player.TeamColor and v.TeamColor == player.TeamColor then
-                Visibility(false, library) -- Ignora jogadores do mesmo time
-                return
-            end
-
-            local HumanoidRootPart_Pos, OnScreen = camera:WorldToViewportPoint(v.Character.HumanoidRootPart.Position)
-            if OnScreen then
-                library.name.Text = v.Name
-                library.name.Position = Vector2.new(HumanoidRootPart_Pos.X, HumanoidRootPart_Pos.Y - 50) -- Ajuste a posição acima da cabeça
-                library.health.Text = "Health: " .. tostring(math.floor(v.Character.Humanoid.Health)) .. "/" .. tostring(math.floor(v.Character.Humanoid.MaxHealth))
-
-                UpdateColorBasedOnTeam(library, v)
-
-                if settings.AutoScale then
-                    local distance = (Vector3.new(camera.CFrame.X, camera.CFrame.Y, camera.CFrame.Z) - v.Character.HumanoidRootPart.Position).magnitude
-                    local textsize = math.clamp(30 / distance, 15, 50) -- Ajuste aqui para um tamanho adequado
-                    library.name.Size = textsize
-                    library.health.Size = textsize - 5
-                else 
-                    library.name.Size = settings.Size
-                    library.health.Size = settings.Size - 5
-                end
-
-                Visibility(true, library)
-            else 
-                Visibility(false, library)
-            end
+            Visibility(true, library)
         else 
             Visibility(false, library)
-            if not game.Players:FindFirstChild(v.Name) then
-                connection:Disconnect()
-            end
         end
     end)
     
@@ -279,51 +254,9 @@ game:GetService("Players").PlayerAdded:Connect(function(newplr)
     coroutine.wrap(Main)(newplr)
 end)
 
--- Substitua por uma versão mais segura:
-local success, Library = pcall(function()
-    return loadstring(game:HttpGet("https://raw.githubusercontent.com/Srmagnata99/Arsenal/refs/heads/main/Skeleto"))()
-end)
-
-if success and Library then
-    local Skeletons = {}
-    
-    local function AddSkeleton(plr)
-        if plr and plr ~= game.Players.LocalPlayer then
-            local success, skeleton = pcall(function()
-                return Library:NewSkeleton(plr, false)
-            end)
-            if success and skeleton then
-                table.insert(Skeletons, skeleton)
-            end
-        end
-    end
-    
-    -- Adiciona skeletons para jogadores existentes
-    for _, plr in pairs(game.Players:GetChildren()) do
-        AddSkeleton(plr)
-    end
-    
-    -- Adiciona skeleton para novos jogadores
-    game.Players.PlayerAdded:Connect(AddSkeleton)
-    
-    -- Modifica a função ToggleESP para incluir verificação
-    function ToggleESP(enabled)
-        settings.Enabled = enabled
-        if Skeletons then
-            for _, skeleton in ipairs(Skeletons) do
-                if skeleton and skeleton.Enabled ~= nil then
-                    skeleton.Enabled = enabled
-                end
-            end
-        end
-    end
-else
-    warn("Não foi possível carregar a biblioteca Skeleton ESP")
-    -- Fallback para a função ToggleESP caso o Skeleton falhe
-    function ToggleESP(enabled)
-        settings.Enabled = enabled
-    end
+-- Remova completamente a parte do Skeleton ESP por enquanto
+function ToggleESP(enabled)
+    settings.Enabled = enabled
 end
-
 
 InitializeESP()
