@@ -40,21 +40,27 @@ local function UpdateColorBasedOnTeam(library, targetPlayer)
     end
 end
 
-for _, v in pairs(game:GetService("Players"):GetPlayers()) do
-    local library = {
-        name = NewText(settings.Color, settings.Size, settings.Transparency),
-        health = NewText(Color3.fromRGB(0, 255, 0), settings.Size - 5, settings.Transparency)
-    }
-
-local function ESP()
+local function ESP(plr, library)
+    if not plr or not library then return end
+    
     local connection
     connection = game:GetService("RunService").RenderStepped:Connect(function()
         if not settings.Enabled then
             Visibility(false, library)
             return
         end
-        if v.Character and v.Character:FindFirstChild("Humanoid") and v.Character:FindFirstChild("HumanoidRootPart") and v.Name ~= player.Name and v.Character.Humanoid.Health > 0 then
-            -- Adiciona a verificação do time
+        
+        if not plr or not plr.Parent or not library then
+            if connection then connection:Disconnect() end
+            return
+        end
+        
+        if plr.Character 
+            and plr.Character:FindFirstChild("Humanoid") 
+            and plr.Character:FindFirstChild("HumanoidRootPart") 
+            and plr.Name ~= player.Name 
+            and plr.Character.Humanoid.Health > 0 then
+            
             if v.TeamColor and player.TeamColor and v.TeamColor == player.TeamColor then
                 Visibility(false, library) -- Ignora jogadores do mesmo time
                 return
@@ -89,71 +95,36 @@ local function ESP()
             end
         end
     end)
-end
-    coroutine.wrap(ESP)()
-end
-
-game.Players.PlayerAdded:Connect(function(newplr)
-    local library = {
-        name = NewText(settings.Color, settings.Size, settings.Transparency),
-        health = NewText(Color3.fromRGB(0, 255, 0), settings.Size - 5, settings.Transparency)
-    }
     
-    local function ESP()
-        local connection
-        connection = game:GetService("RunService").RenderStepped:Connect(function()
-            if not settings.Enabled then
-                Visibility(false, library)
-                return
-            end
-            if newplr.Character and 
-               newplr.Character:FindFirstChild("Humanoid") and 
-               newplr.Character:FindFirstChild("HumanoidRootPart") and 
-               newplr.Name ~= player.Name and 
-               newplr.Character.Humanoid.Health > 0 then
-                
-                if newplr.TeamColor and player.TeamColor and newplr.TeamColor == player.TeamColor then
-                    Visibility(false, library)
-                    return
-                end
+    return connection
+end
 
-                if newplr.Name == player.Name then
-                    Visibility(false, library)
-                    return
-                end
-
-                local HumanoidRootPart_Pos, OnScreen = camera:WorldToViewportPoint(newplr.Character.HumanoidRootPart.Position)
-                if OnScreen then
-                    library.name.Text = newplr.Name
-                    library.name.Position = Vector2.new(HumanoidRootPart_Pos.X, HumanoidRootPart_Pos.Y - 50)
-                    library.health.Text = "Health: " .. tostring(math.floor(newplr.Character.Humanoid.Health)) .. "/" .. tostring(math.floor(newplr.Character.Humanoid.MaxHealth))
-
-                    UpdateColorBasedOnTeam(library, newplr)
-
-                    if settings.AutoScale then
-                        local distance = (Vector3.new(camera.CFrame.X, camera.CFrame.Y, camera.CFrame.Z) - newplr.Character.HumanoidRootPart.Position).magnitude
-                        local textsize = math.clamp(30 / distance, 15, 50)
-                        library.name.Size = textsize
-                        library.health.Size = textsize - 5
-                    else 
-                        library.name.Size = settings.Size
-                        library.health.Size = settings.Size - 5
-                    end
-
-                    Visibility(true, library)
-                else 
-                    Visibility(false, library)
-                end
-            else 
-                Visibility(false, library)
-                if not game.Players:FindFirstChild(newplr.Name) then
-                    connection:Disconnect()
-                end
-            end
-        end)
+local function InitializeESP()
+    for _, plr in pairs(game:GetService("Players"):GetPlayers()) do
+        if plr and plr ~= player then
+            local library = {
+                name = NewText(settings.Color, settings.Size, settings.Transparency),
+                health = NewText(Color3.fromRGB(0, 255, 0), settings.Size - 5, settings.Transparency)
+            }
+            coroutine.wrap(function()
+                ESP(plr, library)
+            end)()
+        end
     end
-    coroutine.wrap(ESP)()
+end
+
+game.Players.PlayerAdded:Connect(function(plr)
+    if plr and plr ~= player then
+        local library = {
+            name = NewText(settings.Color, settings.Size, settings.Transparency),
+            health = NewText(Color3.fromRGB(0, 255, 0), settings.Size - 5, settings.Transparency)
+        }
+        coroutine.wrap(function()
+            ESP(plr, library)
+        end)()
+    end
 end)
+
 -- Continue with your code for boxes and skeletons...
 
 -- Settings
@@ -331,3 +302,6 @@ function ToggleESP(enabled)
         skeleton.Enabled = enabled
     end
 end
+
+
+InitializeESP()
