@@ -3,13 +3,17 @@ local ESPModule = {}
 local settings = {
     Enabled = false,
     Names_Enabled = false,
+    Boxes_Enabled = false,
     Health_Enabled = false,
     Color = Color3.fromRGB(255, 0, 0),
     Size = 20,
     Transparency = 1,
     AutoScale = false,
+    Box_Color = Color3.fromRGB(255, 255, 255),
+    Box_Thickness = 2,
     Team_Check = false,
-    Team_Color = false
+    Team_Color = false,
+    Autothickness = true
 }
 
 local space = game:GetService("Workspace")
@@ -46,6 +50,14 @@ local function UpdateColorBasedOnTeam(library, targetPlayer)
         library.health.Color = Color3.fromRGB(0, 255, 0) -- Cor padrão da saúde
     end
 end
+
+local boxESPTable = {} -- Tabela para rastrear boxes
+
+for _, v in pairs(game:GetService("Players"):GetPlayers()) do
+    local library = {
+        name = NewText(settings.Color, settings.Size, settings.Transparency),
+        health = NewText(Color3.fromRGB(0, 255, 0), settings.Size - 5, settings.Transparency)
+    }
 
 local function ESP()
     local connection
@@ -87,6 +99,14 @@ local function ESP()
                     library.health.Visible = false
                 end
 
+                -- Boxes (modificado)
+                if settings.Boxes_Enabled then
+                    if not boxESPTable[v.Name] then
+                        boxESPTable[v.Name] = true
+                        coroutine.wrap(Main)(v)
+                    end
+                end
+
                 UpdateColorBasedOnTeam(library, v)
 
                 if settings.AutoScale then
@@ -105,6 +125,8 @@ local function ESP()
             end
         end
     end)
+end
+    coroutine.wrap(ESP)()
 end
 
 game.Players.PlayerAdded:Connect(function(newplr)
@@ -351,6 +373,9 @@ ESPModule.ESP = {
     end,
     ToggleNames = function(state)
         settings.Names_Enabled = state
+    end,
+    ToggleBoxes = function(state)
+        settings.Boxes_Enabled = state
     end,
     ToggleHealth = function(state)
         settings.Health_Enabled = state
