@@ -180,8 +180,7 @@ local function NewLine(color, thickness)
     line.From = Vector2.new(0, 0)
     line.To = Vector2.new(0, 0)
     line.Color = color
-    text.Thickness = thickness
-    text.Transparency = 1
+    line.Thickness = thickness 
     return line
 end
 
