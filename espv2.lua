@@ -235,13 +235,12 @@ end
 
 -- Função principal
 local function Main(plr)
-    if not settings.Boxes_Enabled then 
-        if boxESPTable[plr.Name] then
-            boxESPTable[plr.Name] = nil
-        end
+    if not plr or not settings.Boxes_Enabled then 
         return 
     end
+    
     repeat wait() until plr.Character ~= nil and plr.Character:FindFirstChild("Humanoid") ~= nil
+    
     local Library = {
         TL1 = NewLine(Settings.Box_Color, Settings.Box_Thickness),
         TL2 = NewLine(Settings.Box_Color, Settings.Box_Thickness),
@@ -252,7 +251,7 @@ local function Main(plr)
         BR1 = NewLine(Settings.Box_Color, Settings.Box_Thickness),
         BR2 = NewLine(Settings.Box_Color, Settings.Box_Thickness)
     }
-
+    
     local oripart = Instance.new("Part")
     oripart.Parent = Space
     oripart.Transparency = 1
@@ -344,19 +343,27 @@ end
 -- Conectar função ao adicionar jogador
 game:GetService("Players").PlayerAdded:Connect(Main)
 for _, plr in pairs(game:GetService("Players"):GetPlayers()) do
-    if plr ~= Player then
-        Main(plr)
+    if plr ~= player then
+        coroutine.wrap(function()
+            Main(plr)
+        end)()
     end
 end
 -- Draw Boxes
 for i, v in pairs(game:GetService("Players"):GetPlayers()) do
-    if v.Name ~= Player.Name then
-      coroutine.wrap(Main)(v)
+    if v.Name ~= player.Name then
+        coroutine.wrap(function()
+            Main(v)
+        end)()
     end
 end
 
 game:GetService("Players").PlayerAdded:Connect(function(newplr)
-    coroutine.wrap(Main)(newplr)
+    if newplr and newplr ~= player then
+        coroutine.wrap(function()
+            Main(newplr)
+        end)()
+    end
 end)
 
 ESPModule.settings = settings
