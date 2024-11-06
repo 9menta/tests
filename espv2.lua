@@ -1,3 +1,5 @@
+local ESPModule = {}
+
 local settings = {
     Enabled = false,
     Color = Color3.fromRGB(255, 0, 0),
@@ -8,7 +10,10 @@ local settings = {
     Box_Thickness = 2,
     Team_Check = true,
     Team_Color = false,
-    Autothickness = true
+    Autothickness = true,
+    Names = false,
+    Boxes = false,
+    Health = false
 }
 
 local space = game:GetService("Workspace")
@@ -316,30 +321,29 @@ game:GetService("Players").PlayerAdded:Connect(function(newplr)
     coroutine.wrap(Main)(newplr)
 end)
 
--- No final do arquivo esp.lua, adicione:
-return {
-    settings = settings,
-    ESP = {
-        Toggle = function(state)
-            settings.Enabled = state
-        end,
-        SetTeamCheck = function(state)
-            settings.Team_Check = state
-        end,
-        SetNames = function(state)
-            settings.Names = state
-        end,
-        SetBoxes = function(state)
-            settings.Boxes = state
-        end,
-        SetHealth = function(state)
-            settings.Health = state
-        end,
-        SetSize = function(value)
-            settings.Size = value
-        end,
-        SetColor = function(color)
-            settings.Color = color
-        end
-    }
+ESPModule.settings = settings
+ESPModule.ESP = {
+    Toggle = function(state)
+        settings.Enabled = state
+    end,
+    SetTeamCheck = function(state)
+        settings.Team_Check = state
+    end,
+    SetNames = function(state)
+        settings.Names = state
+    end,
+    SetBoxes = function(state)
+        settings.Boxes = state
+    end,
+    SetHealth = function(state)
+        settings.Health = state
+    end,
+    SetSize = function(value)
+        settings.Size = value
+    end,
+    SetColor = function(color)
+        settings.Color = color
+    end
 }
+
+return ESPModule
