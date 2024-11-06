@@ -1,14 +1,21 @@
 local settings = {
+    Enabled = false,
     Color = Color3.fromRGB(255, 0, 0),
-    Size = 20,  -- Tamanho do texto ajustado para melhor visibilidade
-    Transparency = 1, -- 1 Visível - 0 Não Visível
-    AutoScale = true
+    Size = 20,
+    Transparency = 1,
+    AutoScale = true,
+    Box_Color = Color3.fromRGB(255, 255, 255),
+    Box_Thickness = 2,
+    Team_Check = true,
+    Team_Color = false,
+    Autothickness = true
 }
 
 local space = game:GetService("Workspace")
 local player = game:GetService("Players").LocalPlayer
 local camera = space.CurrentCamera
 
+-- Funções auxiliares para Drawing
 local function NewText(color, size, transparency)
     local text = Drawing.new("Text")
     text.Visible = false
@@ -18,8 +25,8 @@ local function NewText(color, size, transparency)
     text.Size = size
     text.Center = true
     text.Transparency = transparency
-    text.Outline = true -- Adiciona um contorno
-    text.OutlineColor = Color3.new(0, 0, 0) -- Define o contorno branco
+    text.Outline = true
+    text.OutlineColor = Color3.new(0, 0, 0)
     return text
 end
 
@@ -48,6 +55,11 @@ for _, v in pairs(game:GetService("Players"):GetPlayers()) do
 local function ESP()
     local connection
     connection = game:GetService("RunService").RenderStepped:Connect(function()
+        if not settings.Enabled then
+            Visibility(false, library)
+            return
+        end
+
         if v.Character and v.Character:FindFirstChild("Humanoid") and v.Character:FindFirstChild("HumanoidRootPart") and v.Name ~= player.Name and v.Character.Humanoid.Health > 0 then
             -- Adiciona a verificação do time
             if v.TeamColor and player.TeamColor and v.TeamColor == player.TeamColor then
@@ -96,6 +108,11 @@ game.Players.PlayerAdded:Connect(function(newplr)
     local function ESP()
     local connection
     connection = game:GetService("RunService").RenderStepped:Connect(function()
+        if not settings.Enabled then
+            Visibility(false, library)
+            return
+        end
+
         if v.Character and v.Character:FindFirstChild("Humanoid") and v.Character:FindFirstChild("HumanoidRootPart") and v.Name ~= player.Name and v.Character.Humanoid.Health > 0 then
             -- Verificação para ignorar o jogador atual e jogadores do mesmo time
             if v.TeamColor and player.TeamColor and v.TeamColor == player.TeamColor then
@@ -163,8 +180,8 @@ local function NewLine(color, thickness)
     line.From = Vector2.new(0, 0)
     line.To = Vector2.new(0, 0)
     line.Color = color
-    line.Thickness = thickness
-    line.Transparency = 1
+    text.Thickness = thickness
+    text.Transparency = 1
     return line
 end
 
@@ -205,6 +222,11 @@ local function Main(plr)
     local function Updater()
         local c
         c = game:GetService("RunService").RenderStepped:Connect(function()
+            if not settings.Enabled then
+                Vis(Library, false)
+                return
+            end
+
             if plr.Character ~= nil and plr.Character:FindFirstChild("Humanoid") ~= nil and plr.Character:FindFirstChild("HumanoidRootPart") ~= nil and plr.Character.Humanoid.Health > 0 then
                 if Settings.Team_Check and plr.TeamColor == Player.TeamColor then
                     Vis(Library, false) -- Ignora jogadores do mesmo time
