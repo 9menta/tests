@@ -98,56 +98,60 @@ game.Players.PlayerAdded:Connect(function(newplr)
         name = NewText(settings.Color, settings.Size, settings.Transparency),
         health = NewText(Color3.fromRGB(0, 255, 0), settings.Size - 5, settings.Transparency)
     }
+    
     local function ESP()
-    local connection
-    connection = game:GetService("RunService").RenderStepped:Connect(function()
-        if not settings.Enabled then
-            Visibility(false, library)
-            return
-        end
-        if v.Character and v.Character:FindFirstChild("Humanoid") and v.Character:FindFirstChild("HumanoidRootPart") and v.Name ~= player.Name and v.Character.Humanoid.Health > 0 then
-            -- Verificação para ignorar o jogador atual e jogadores do mesmo time
-            if v.TeamColor and player.TeamColor and v.TeamColor == player.TeamColor then
-                Visibility(false, library) -- Ignora jogadores do mesmo time
+        local connection
+        connection = game:GetService("RunService").RenderStepped:Connect(function()
+            if not settings.Enabled then
+                Visibility(false, library)
                 return
             end
-
-            -- Aqui você pode adicionar a verificação para ignorar seu próprio personagem
-            if v.Name == player.Name then
-                Visibility(false, library) -- Ignora o próprio personagem
-                return
-            end
-
-            local HumanoidRootPart_Pos, OnScreen = camera:WorldToViewportPoint(v.Character.HumanoidRootPart.Position)
-            if OnScreen then
-                library.name.Text = v.Name
-                library.name.Position = Vector2.new(HumanoidRootPart_Pos.X, HumanoidRootPart_Pos.Y - 50) -- Ajuste a posição acima da cabeça
-                library.health.Text = "Health: " .. tostring(math.floor(v.Character.Humanoid.Health)) .. "/" .. tostring(math.floor(v.Character.Humanoid.MaxHealth))
-
-                UpdateColorBasedOnTeam(library, v)
-
-                if settings.AutoScale then
-                    local distance = (Vector3.new(camera.CFrame.X, camera.CFrame.Y, camera.CFrame.Z) - v.Character.HumanoidRootPart.Position).magnitude
-                    local textsize = math.clamp(30 / distance, 15, 50) -- Ajuste aqui para um tamanho adequado
-                    library.name.Size = textsize
-                    library.health.Size = textsize - 5
-                else 
-                    library.name.Size = settings.Size
-                    library.health.Size = settings.Size - 5
+            if newplr.Character and 
+               newplr.Character:FindFirstChild("Humanoid") and 
+               newplr.Character:FindFirstChild("HumanoidRootPart") and 
+               newplr.Name ~= player.Name and 
+               newplr.Character.Humanoid.Health > 0 then
+                
+                if newplr.TeamColor and player.TeamColor and newplr.TeamColor == player.TeamColor then
+                    Visibility(false, library)
+                    return
                 end
 
-                Visibility(true, library)
+                if newplr.Name == player.Name then
+                    Visibility(false, library)
+                    return
+                end
+
+                local HumanoidRootPart_Pos, OnScreen = camera:WorldToViewportPoint(newplr.Character.HumanoidRootPart.Position)
+                if OnScreen then
+                    library.name.Text = newplr.Name
+                    library.name.Position = Vector2.new(HumanoidRootPart_Pos.X, HumanoidRootPart_Pos.Y - 50)
+                    library.health.Text = "Health: " .. tostring(math.floor(newplr.Character.Humanoid.Health)) .. "/" .. tostring(math.floor(newplr.Character.Humanoid.MaxHealth))
+
+                    UpdateColorBasedOnTeam(library, newplr)
+
+                    if settings.AutoScale then
+                        local distance = (Vector3.new(camera.CFrame.X, camera.CFrame.Y, camera.CFrame.Z) - newplr.Character.HumanoidRootPart.Position).magnitude
+                        local textsize = math.clamp(30 / distance, 15, 50)
+                        library.name.Size = textsize
+                        library.health.Size = textsize - 5
+                    else 
+                        library.name.Size = settings.Size
+                        library.health.Size = settings.Size - 5
+                    end
+
+                    Visibility(true, library)
+                else 
+                    Visibility(false, library)
+                end
             else 
                 Visibility(false, library)
+                if not game.Players:FindFirstChild(newplr.Name) then
+                    connection:Disconnect()
+                end
             end
-        else 
-            Visibility(false, library)
-            if not game.Players:FindFirstChild(v.Name) then
-                connection:Disconnect()
-            end
-        end
-    end)
-end
+        end)
+    end
     coroutine.wrap(ESP)()
 end)
 -- Continue with your code for boxes and skeletons...
