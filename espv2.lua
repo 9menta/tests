@@ -74,9 +74,30 @@ local function ESP()
 
             local HumanoidRootPart_Pos, OnScreen = camera:WorldToViewportPoint(v.Character.HumanoidRootPart.Position)
             if OnScreen then
-                library.name.Text = v.Name
-                library.name.Position = Vector2.new(HumanoidRootPart_Pos.X, HumanoidRootPart_Pos.Y - 50) -- Ajuste a posição acima da cabeça
-                library.health.Text = "Health: " .. tostring(math.floor(v.Character.Humanoid.Health)) .. "/" .. tostring(math.floor(v.Character.Humanoid.MaxHealth))
+                -- Nome
+                if settings.Names_Enabled then
+                    library.name.Text = v.Name
+                    library.name.Position = Vector2.new(HumanoidRootPart_Pos.X, HumanoidRootPart_Pos.Y - 50)
+                    library.name.Visible = settings.Enabled
+                else
+                    library.name.Visible = false
+                end
+
+                -- Vida
+                if settings.Health_Enabled then
+                    library.health.Text = "Health: " .. tostring(math.floor(v.Character.Humanoid.Health)) .. "/" .. tostring(math.floor(v.Character.Humanoid.MaxHealth))
+                    library.health.Position = Vector2.new(HumanoidRootPart_Pos.X, HumanoidRootPart_Pos.Y - 35)
+                    library.health.Visible = settings.Enabled
+                else
+                    library.health.Visible = false
+                end
+
+                -- Boxes (na função Main)
+                if settings.Boxes_Enabled then
+                    Vis(Library, settings.Enabled)
+                else
+                    Vis(Library, false)
+                end
 
                 UpdateColorBasedOnTeam(library, v)
 
@@ -342,7 +363,7 @@ ESPModule.ESP = {
         settings.Size = value
     end,
     SetColor = function(color)
-        settings.Box_Color = color
+        settings.Color = color
     end
 }
 
