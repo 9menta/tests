@@ -103,7 +103,11 @@ local function ESP()
                 if settings.Boxes_Enabled then
                     if not boxESPTable[v.Name] then
                         boxESPTable[v.Name] = true
-                        coroutine.wrap(Main)(v)
+                        if v and v.Character then
+                            coroutine.wrap(function()
+                                Main(v)
+                            end)()
+                        end
                     end
                 end
 
