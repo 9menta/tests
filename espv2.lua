@@ -2,7 +2,8 @@ local settings = {
     Color = Color3.fromRGB(255, 0, 0),
     Size = 20,  -- Tamanho do texto ajustado para melhor visibilidade
     Transparency = 1, -- 1 Visível - 0 Não Visível
-    AutoScale = true
+    AutoScale = true,
+    Enabled = false  -- ESP desativada por padrão
 }
 
 local space = game:GetService("Workspace")
@@ -48,6 +49,10 @@ for _, v in pairs(game:GetService("Players"):GetPlayers()) do
 local function ESP()
     local connection
     connection = game:GetService("RunService").RenderStepped:Connect(function()
+        if not settings.Enabled then
+            Visibility(false, library)
+            return
+        end
         if v.Character and v.Character:FindFirstChild("Humanoid") and v.Character:FindFirstChild("HumanoidRootPart") and v.Name ~= player.Name and v.Character.Humanoid.Health > 0 then
             -- Adiciona a verificação do time
             if v.TeamColor and player.TeamColor and v.TeamColor == player.TeamColor then
@@ -96,6 +101,10 @@ game.Players.PlayerAdded:Connect(function(newplr)
     local function ESP()
     local connection
     connection = game:GetService("RunService").RenderStepped:Connect(function()
+        if not settings.Enabled then
+            Visibility(false, library)
+            return
+        end
         if v.Character and v.Character:FindFirstChild("Humanoid") and v.Character:FindFirstChild("HumanoidRootPart") and v.Name ~= player.Name and v.Character.Humanoid.Health > 0 then
             -- Verificação para ignorar o jogador atual e jogadores do mesmo time
             if v.TeamColor and player.TeamColor and v.TeamColor == player.TeamColor then
@@ -296,11 +305,25 @@ game:GetService("Players").PlayerAdded:Connect(function(newplr)
 end)
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Srmagnata99/Arsenal/refs/heads/main/Skeleto"))()
 
-
 local Skeletons = {}
-for _, Player in next, game.Players:GetChildren() do
-	table.insert(Skeletons, Library:NewSkeleton(Player, true));
+for _, plr in next, game.Players:GetChildren() do
+    if plr ~= game.Players.LocalPlayer then -- Não criar skeleton para o jogador local
+        local skeleton = Library:NewSkeleton(plr, false) -- Inicialmente desativado
+        table.insert(Skeletons, skeleton)
+    end
 end
-game.Players.PlayerAdded:Connect(function(Player)
-	table.insert(Skeletons, Library:NewSkeleton(Player, true));
+
+game.Players.PlayerAdded:Connect(function(plr)
+    if plr ~= game.Players.LocalPlayer then -- Não criar skeleton para o jogador local
+        local skeleton = Library:NewSkeleton(plr, false) -- Inicialmente desativado
+        table.insert(Skeletons, skeleton)
+    end
 end)
+
+-- Função para ativar/desativar ESP e Skeletons
+function ToggleESP(enabled)
+    settings.Enabled = enabled
+    for _, skeleton in ipairs(Skeletons) do
+        skeleton.Enabled = enabled
+    end
+end
