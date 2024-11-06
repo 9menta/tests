@@ -68,8 +68,8 @@ local function ESP()
         end
 
         if v and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character:FindFirstChild("HumanoidRootPart") and v.Name ~= player.Name and v.Character.Humanoid.Health > 0 then
-            -- Verificação de time
-            if settings.Team_Check and v.TeamColor and player.TeamColor and v.TeamColor == player.TeamColor then
+            -- Verificação de time com proteção contra nil
+            if settings.Team_Check and v and player and v.TeamColor and player.TeamColor and v.TeamColor == player.TeamColor then
                 Visibility(false, library)
                 return
             end
@@ -269,8 +269,9 @@ local function Main(plr)
             end
 
             if plr.Character ~= nil and plr.Character:FindFirstChild("Humanoid") ~= nil and plr.Character:FindFirstChild("HumanoidRootPart") ~= nil and plr.Character.Humanoid.Health > 0 then
-                if Settings.Team_Check and plr.TeamColor == Player.TeamColor then
-                    Vis(Library, false) -- Ignora jogadores do mesmo time
+                -- Verificação de time com proteção contra nil
+                if Settings.Team_Check and plr and Player and plr.TeamColor and Player.TeamColor and plr.TeamColor == Player.TeamColor then
+                    Vis(Library, false)
                     return
                 end
                 
