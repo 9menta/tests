@@ -1,9 +1,13 @@
 local ESPModule = {}
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local camera = workspace.CurrentCamera
+local localPlayer = Players.LocalPlayer
 
 local settings = {
     -- Configurações gerais
     Enabled = false,
-    TeamCheck = true,
+    TeamCheck = false,
     
     -- Configurações de nome
     Names = {
@@ -11,7 +15,7 @@ local settings = {
         Size = 20,
         Color = Color3.fromRGB(255, 0, 0),
         Transparency = 1,
-        AutoScale = true,
+        AutoScale = false,
         ShowDistance = true
     },
     
@@ -52,56 +56,137 @@ local function GetPlayerPosition(character)
     return originalPos
 end
 
--- Função atualizada para desenhar box
-local function UpdateBox(boxLib, character, onScreen)
-    if not settings.Boxes.Enabled then
-        Visibility(false, boxLib)
-        return
-    end
-    
-    local pos = GetPlayerPosition(character)
-    if not pos then return end
-    
-    -- Calcular tamanho do box baseado na distância, não no hitbox
-    local distance = (camera.CFrame.Position - pos).Magnitude
-    local size = Vector2.new(
-        math.clamp(1000 / distance, 30, 200),
-        math.clamp(2000 / distance, 60, 400)
-    )
-    
-    -- Atualizar posições do box...
+-- Função para criar elementos de desenho
+local function CreateDrawings()
+    return {
+        box = Drawing.new("Square"),
+        name = Drawing.new("Text"),
+        health = Drawing.new("Text")
+    }
 end
 
--- Função atualizada para nomes e vida
-local function UpdateNameAndHealth(library, character, onScreen)
-    if not (settings.Names.Enabled or settings.Health.Enabled) then
-        Visibility(false, library)
-        return
-    end
-    
-    local pos = GetPlayerPosition(character)
-    if not pos then return end
-    
-    local screenPos = camera:WorldToViewportPoint(pos)
-    
-    -- Atualizar nome
-    if settings.Names.Enabled then
-        library.name.Position = Vector2.new(
-            screenPos.X,
-            screenPos.Y - 40
-        )
-    end
-    
-    -- Atualizar vida
-    if settings.Health.Enabled then
-        library.health.Position = Vector2.new(
-            screenPos.X,
-            screenPos.Y - 25
-        )
+-- Configurar propriedades iniciais
+local function SetupDrawing(drawing, type)
+    if type == "box" then
+        drawing.Thickness = settings.Boxes.Thickness
+        drawing.Filled = false
+        drawing.Transparency = settings.Boxes.Transparency
+        drawing.Color = settings.Boxes.Color
+        drawing.Visible = false
+    elseif type == "text" then
+        drawing.Size = settings.Names.Size
+        drawing.Center = true
+        drawing.Outline = true
+        drawing.Visible = false
     end
 end
 
--- Resto do seu código ESP aqui...
+-- Armazenar os drawings para cada jogador
+local playerDrawings = {}
+
+-- Função principal do ESP
+local function UpdateESP()
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player == localPlayer then continue end
+        
+        -- Criar drawings se não existirem
+        if not playerDrawings[player] then
+            playerDrawings[player] = CreateDrawings()
+            SetupDrawing(playerDrawings[player].box, "box")
+            SetupDrawing(playerDrawings[player].name, "text")
+            SetupDrawing(playerDrawings[player].health, "text")
+        end
+        
+        local drawings = playerDrawings[player]
+        
+        -- Verificar se o ESP está ativo
+        if not settings.Enabled then
+            drawings.box.Visible = false
+            drawings.name.Visible = false
+            drawings.health.Visible = false
+            continue
+        end
+        
+        -- Verificar character
+        if not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then
+            drawings.box.Visible = false
+            drawings.name.Visible = false
+            drawings.health.Visible = false
+            continue
+        end
+        
+        -- Team Check
+        if settings.TeamCheck and player.Team == localPlayer.Team then
+            drawings.box.Visible = false
+            drawings.name.Visible = false
+            drawings.health.Visible = false
+            continue
+        end
+        
+        local character = player.Character
+        local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+        local humanoid = character:FindFirstChild("Humanoid")
+        local head = character:FindFirstChild("Head")
+        
+        if not humanoidRootPart or not humanoid or not head then continue end
+        
+        local pos = GetPlayerPosition(character)
+        local screenPos, onScreen = camera:WorldToViewportPoint(pos)
+        
+        if not onScreen then
+            drawings.box.Visible = false
+            drawings.name.Visible = false
+            drawings.health.Visible = false
+            continue
+        end
+        
+        -- Atualizar Box
+        if settings.Boxes.Enabled then
+            local size = GetBoxSize(character)
+            drawings.box.Size = size
+            drawings.box.Position = Vector2.new(screenPos.X - size.X/2, screenPos.Y - size.Y/2)
+            drawings.box.Color = settings.Boxes.Color
+            drawings.box.Visible = true
+        else
+            drawings.box.Visible = false
+        end
+        
+        -- Atualizar Nome
+        if settings.Names.Enabled then
+            drawings.name.Text = player.Name
+            drawings.name.Position = Vector2.new(screenPos.X, screenPos.Y - 40)
+            drawings.name.Color = settings.Names.Color
+            drawings.name.Size = settings.Names.Size
+            drawings.name.Visible = true
+        else
+            drawings.name.Visible = false
+        end
+        
+        -- Atualizar Vida
+        if settings.Health.Enabled then
+            drawings.health.Text = math.floor(humanoid.Health) .. "/" .. math.floor(humanoid.MaxHealth)
+            drawings.health.Position = Vector2.new(screenPos.X, screenPos.Y - 25)
+            drawings.health.Color = settings.Health.Color
+            drawings.health.Size = settings.Health.Size
+            drawings.health.Visible = true
+        else
+            drawings.health.Visible = false
+        end
+    end
+end
+
+-- Limpar drawings quando jogador sai
+Players.PlayerRemoving:Connect(function(player)
+    if playerDrawings[player] then
+        for _, drawing in pairs(playerDrawings[player]) do
+            drawing:Remove()
+        end
+        playerDrawings[player] = nil
+    end
+end)
+
+-- Iniciar o loop de atualização
+RunService.RenderStepped:Connect(UpdateESP)
 
 ESPModule.settings = settings
 ESPModule.ESP = {
