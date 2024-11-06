@@ -51,6 +51,8 @@ local function UpdateColorBasedOnTeam(library, targetPlayer)
     end
 end
 
+local boxESPTable = {} -- Tabela para rastrear boxes
+
 for _, v in pairs(game:GetService("Players"):GetPlayers()) do
     local library = {
         name = NewText(settings.Color, settings.Size, settings.Transparency),
@@ -97,11 +99,10 @@ local function ESP()
                     library.health.Visible = false
                 end
 
-                -- Boxes
+                -- Boxes (modificado)
                 if settings.Boxes_Enabled then
-                    -- Aqui você deve chamar a função Main para o jogador específico
-                    if not v.BoxESP then
-                        v.BoxESP = true
+                    if not boxESPTable[v.Name] then
+                        boxESPTable[v.Name] = true
                         coroutine.wrap(Main)(v)
                     end
                 end
@@ -186,6 +187,14 @@ game.Players.PlayerAdded:Connect(function(newplr)
 end
     coroutine.wrap(ESP)()
 end)
+
+-- Adicione uma conexão PlayerRemoving:
+game.Players.PlayerRemoving:Connect(function(plr)
+    if boxESPTable[plr.Name] then
+        boxESPTable[plr.Name] = nil
+    end
+end)
+
 -- Continue with your code for boxes and skeletons...
 
 -- Settings
@@ -226,7 +235,12 @@ end
 
 -- Função principal
 local function Main(plr)
-    if not settings.Boxes_Enabled then return end
+    if not settings.Boxes_Enabled then 
+        if boxESPTable[plr.Name] then
+            boxESPTable[plr.Name] = nil
+        end
+        return 
+    end
     repeat wait() until plr.Character ~= nil and plr.Character:FindFirstChild("Humanoid") ~= nil
     local Library = {
         TL1 = NewLine(Settings.Box_Color, Settings.Box_Thickness),
@@ -372,10 +386,8 @@ ESPModule.ESP = {
 
 -- No módulo ESP, adicione uma função para limpar as boxes
 ESPModule.ESP.ClearBoxes = function()
-    for _, v in pairs(game:GetService("Players"):GetPlayers()) do
-        if v.BoxESP then
-            v.BoxESP = nil
-        end
+    for playerName in pairs(boxESPTable) do
+        boxESPTable[playerName] = nil
     end
 end
 
