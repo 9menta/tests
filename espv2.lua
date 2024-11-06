@@ -278,28 +278,50 @@ end
 game:GetService("Players").PlayerAdded:Connect(function(newplr)
     coroutine.wrap(Main)(newplr)
 end)
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Srmagnata99/Arsenal/refs/heads/main/Skeleto"))()
 
-local Skeletons = {}
-for _, plr in next, game.Players:GetChildren() do
-    if plr ~= game.Players.LocalPlayer then -- Não criar skeleton para o jogador local
-        local skeleton = Library:NewSkeleton(plr, false) -- Inicialmente desativado
-        table.insert(Skeletons, skeleton)
-    end
-end
-
-game.Players.PlayerAdded:Connect(function(plr)
-    if plr ~= game.Players.LocalPlayer then -- Não criar skeleton para o jogador local
-        local skeleton = Library:NewSkeleton(plr, false) -- Inicialmente desativado
-        table.insert(Skeletons, skeleton)
-    end
+-- Substitua por uma versão mais segura:
+local success, Library = pcall(function()
+    return loadstring(game:HttpGet("https://raw.githubusercontent.com/Srmagnata99/Arsenal/refs/heads/main/Skeleto"))()
 end)
 
--- Função para ativar/desativar ESP e Skeletons
-function ToggleESP(enabled)
-    settings.Enabled = enabled
-    for _, skeleton in ipairs(Skeletons) do
-        skeleton.Enabled = enabled
+if success and Library then
+    local Skeletons = {}
+    
+    local function AddSkeleton(plr)
+        if plr and plr ~= game.Players.LocalPlayer then
+            local success, skeleton = pcall(function()
+                return Library:NewSkeleton(plr, false)
+            end)
+            if success and skeleton then
+                table.insert(Skeletons, skeleton)
+            end
+        end
+    end
+    
+    -- Adiciona skeletons para jogadores existentes
+    for _, plr in pairs(game.Players:GetChildren()) do
+        AddSkeleton(plr)
+    end
+    
+    -- Adiciona skeleton para novos jogadores
+    game.Players.PlayerAdded:Connect(AddSkeleton)
+    
+    -- Modifica a função ToggleESP para incluir verificação
+    function ToggleESP(enabled)
+        settings.Enabled = enabled
+        if Skeletons then
+            for _, skeleton in ipairs(Skeletons) do
+                if skeleton and skeleton.Enabled ~= nil then
+                    skeleton.Enabled = enabled
+                end
+            end
+        end
+    end
+else
+    warn("Não foi possível carregar a biblioteca Skeleton ESP")
+    -- Fallback para a função ToggleESP caso o Skeleton falhe
+    function ToggleESP(enabled)
+        settings.Enabled = enabled
     end
 end
 
