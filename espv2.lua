@@ -14,6 +14,14 @@ ESP.__index = ESP
 function ESP.new()
     local self = setmetatable({}, ESP)
     self.espCache = {}
+    self.enabled = false
+    self.showNames = false
+    self.showBoxes = false
+    self.showHealth = false
+    self.showTracers = false
+    self.showDistance = false
+    self.showItems = false
+    self.showSkeleton = false
     return self
 end
 
@@ -104,6 +112,11 @@ local bodyConnections = {
 }
 
 function ESP:updateComponents(components, character, player)
+    if not self.enabled then
+        self:hideComponents(components)
+        return
+    end
+
     local hrp = character:FindFirstChild("HumanoidRootPart")
     local humanoid = character:FindFirstChild("Humanoid")
 
@@ -119,69 +132,93 @@ function ESP:updateComponents(components, character, player)
             local width, height = math.floor(screenHeight / 25 * factor), math.floor(screenWidth / 27 * factor)
             local distanceFromPlayer = math.floor((LocalHumanoidRootPart.Position - hrp.Position).magnitude)
             
-            -- Box properties
-            components.Box.Size = Vector2.new(width, height)
-            components.Box.Position = Vector2.new(hrpPosition.X - width / 2, hrpPosition.Y - height / 2)
-            components.Box.Visible = true
-
-            -- Tracer properties (fixed position at the bottom center of the screen)
-            components.Tracer.From = tracerStart
-            components.Tracer.To = Vector2.new(hrpPosition.X, hrpPosition.Y + height / 2)
-            components.Tracer.Visible = true
-
-            -- Distance label properties
-            components.DistanceLabel.Text = string.format("[%dM]", distanceFromPlayer)
-            components.DistanceLabel.Position = Vector2.new(hrpPosition.X, hrpPosition.Y + height / 2 + 15)
-            components.DistanceLabel.Visible = true
-
-            -- Name label properties with team color
-            local teamColor = player.Team and player.Team.TeamColor.Color or Color3.fromRGB(255, 255, 255)
-            components.NameLabel.Text = string.format("[%s]", player.Name)
-            components.NameLabel.Position = Vector2.new(hrpPosition.X, hrpPosition.Y - height / 2 - 15)
-            components.NameLabel.Color = teamColor  -- Set the color to the team color
-            components.NameLabel.Visible = true
-
-            -- Health bar properties
-            local healthBarHeight = height
-            local healthBarWidth = 5
-            local healthFraction = humanoid.Health / humanoid.MaxHealth
-
-            components.HealthBar.Outline.Size = Vector2.new(healthBarWidth, healthBarHeight)
-            components.HealthBar.Outline.Position = Vector2.new(components.Box.Position.X - healthBarWidth - 2, components.Box.Position.Y)
-            components.HealthBar.Outline.Visible = true
-
-            components.HealthBar.Health.Size = Vector2.new(healthBarWidth - 2, healthBarHeight * healthFraction)
-            components.HealthBar.Health.Position = Vector2.new(components.HealthBar.Outline.Position.X + 1, components.HealthBar.Outline.Position.Y + healthBarHeight * (1 - healthFraction))
-            components.HealthBar.Health.Visible = true
-
-            -- Item label properties
-            local backpack = player.Backpack
-            local tool = backpack:FindFirstChildOfClass("Tool") or character:FindFirstChildOfClass("Tool")
-            if tool then
-                components.ItemLabel.Text = string.format("[Holding: %s]", tool.Name)
+            if self.showBoxes then
+                components.Box.Size = Vector2.new(width, height)
+                components.Box.Position = Vector2.new(hrpPosition.X - width / 2, hrpPosition.Y - height / 2)
+                components.Box.Visible = true
             else
-                components.ItemLabel.Text = "[Holding: No tool]"
+                components.Box.Visible = false
             end
-            components.ItemLabel.Position = Vector2.new(hrpPosition.X, hrpPosition.Y + height / 2 + 35)
-            components.ItemLabel.Visible = true
 
-            -- Skeleton properties
-            local connections = bodyConnections[humanoid.RigType.Name] or {}
-            for _, connection in ipairs(connections) do
-                local partA = character:FindFirstChild(connection[1])
-                local partB = character:FindFirstChild(connection[2])
-                if partA and partB then
-                    local line = components.SkeletonLines[connection[1] .. "-" .. connection[2]] or self:createDrawing("Line", {Thickness = 1, Color = Color3.fromRGB(255, 255, 255)})
-                    local posA, onScreenA = Camera:WorldToViewportPoint(partA.Position)
-                    local posB, onScreenB = Camera:WorldToViewportPoint(partB.Position)
-                    if onScreenA and onScreenB then
-                        line.From = Vector2.new(posA.X, posA.Y)
-                        line.To = Vector2.new(posB.X, posB.Y)
-                        line.Visible = true
-                        components.SkeletonLines[connection[1] .. "-" .. connection[2]] = line
-                    else
-                        line.Visible = false
+            if self.showTracers then
+                components.Tracer.From = tracerStart
+                components.Tracer.To = Vector2.new(hrpPosition.X, hrpPosition.Y + height / 2)
+                components.Tracer.Visible = true
+            else
+                components.Tracer.Visible = false
+            end
+
+            if self.showDistance then
+                components.DistanceLabel.Text = string.format("[%dM]", distanceFromPlayer)
+                components.DistanceLabel.Position = Vector2.new(hrpPosition.X, hrpPosition.Y + height / 2 + 15)
+                components.DistanceLabel.Visible = true
+            else
+                components.DistanceLabel.Visible = false
+            end
+
+            if self.showNames then
+                local teamColor = player.Team and player.Team.TeamColor.Color or Color3.fromRGB(255, 255, 255)
+                components.NameLabel.Text = string.format("[%s]", player.Name)
+                components.NameLabel.Position = Vector2.new(hrpPosition.X, hrpPosition.Y - height / 2 - 15)
+                components.NameLabel.Color = teamColor
+                components.NameLabel.Visible = true
+            else
+                components.NameLabel.Visible = false
+            end
+
+            if self.showHealth then
+                local healthBarHeight = height
+                local healthBarWidth = 5
+                local healthFraction = humanoid.Health / humanoid.MaxHealth
+
+                components.HealthBar.Outline.Size = Vector2.new(healthBarWidth, healthBarHeight)
+                components.HealthBar.Outline.Position = Vector2.new(components.Box.Position.X - healthBarWidth - 2, components.Box.Position.Y)
+                components.HealthBar.Outline.Visible = true
+
+                components.HealthBar.Health.Size = Vector2.new(healthBarWidth - 2, healthBarHeight * healthFraction)
+                components.HealthBar.Health.Position = Vector2.new(components.HealthBar.Outline.Position.X + 1, components.HealthBar.Outline.Position.Y + healthBarHeight * (1 - healthFraction))
+                components.HealthBar.Health.Visible = true
+            else
+                components.HealthBar.Outline.Visible = false
+                components.HealthBar.Health.Visible = false
+            end
+
+            if self.showItems then
+                local backpack = player.Backpack
+                local tool = backpack:FindFirstChildOfClass("Tool") or character:FindFirstChildOfClass("Tool")
+                if tool then
+                    components.ItemLabel.Text = string.format("[Holding: %s]", tool.Name)
+                else
+                    components.ItemLabel.Text = "[Holding: No tool]"
+                end
+                components.ItemLabel.Position = Vector2.new(hrpPosition.X, hrpPosition.Y + height / 2 + 35)
+                components.ItemLabel.Visible = true
+            else
+                components.ItemLabel.Visible = false
+            end
+
+            if self.showSkeleton then
+                local connections = bodyConnections[humanoid.RigType.Name] or {}
+                for _, connection in ipairs(connections) do
+                    local partA = character:FindFirstChild(connection[1])
+                    local partB = character:FindFirstChild(connection[2])
+                    if partA and partB then
+                        local line = components.SkeletonLines[connection[1] .. "-" .. connection[2]] or self:createDrawing("Line", {Thickness = 1, Color = Color3.fromRGB(255, 255, 255)})
+                        local posA, onScreenA = Camera:WorldToViewportPoint(partA.Position)
+                        local posB, onScreenB = Camera:WorldToViewportPoint(partB.Position)
+                        if onScreenA and onScreenB then
+                            line.From = Vector2.new(posA.X, posA.Y)
+                            line.To = Vector2.new(posB.X, posB.Y)
+                            line.Visible = true
+                            components.SkeletonLines[connection[1] .. "-" .. connection[2]] = line
+                        else
+                            line.Visible = false
+                        end
                     end
+                end
+            else
+                for _, line in pairs(components.SkeletonLines) do
+                    line.Visible = false
                 end
             end
         else
