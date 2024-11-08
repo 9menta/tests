@@ -22,6 +22,10 @@ function ESP.new()
     self.showDistance = false
     self.showItems = false
     self.showSkeleton = false
+    self.teamCheck = true
+    self.boxColor = Color3.fromRGB(255, 255, 255)
+    self.teamColor = Color3.fromRGB(0, 255, 0)
+    self.enemyColor = Color3.fromRGB(255, 0, 0)
     return self
 end
 
@@ -117,6 +121,16 @@ function ESP:updateComponents(components, character, player)
         return
     end
 
+    -- Verificação de time
+    if self.teamCheck then
+        local isTeammate = player.Team == LocalPlayer.Team
+        if isTeammate then
+            -- Se for do mesmo time, não mostrar ESP
+            self:hideComponents(components)
+            return
+        end
+    end
+
     local hrp = character:FindFirstChild("HumanoidRootPart")
     local humanoid = character:FindFirstChild("Humanoid")
 
@@ -132,9 +146,18 @@ function ESP:updateComponents(components, character, player)
             local width, height = math.floor(screenHeight / 25 * factor), math.floor(screenWidth / 27 * factor)
             local distanceFromPlayer = math.floor((LocalHumanoidRootPart.Position - hrp.Position).magnitude)
             
+            -- Determinar cor baseado no time
+            local espColor
+            if self.teamCheck then
+                espColor = player.Team == LocalPlayer.Team and self.teamColor or self.enemyColor
+            else
+                espColor = self.boxColor
+            end
+
             if self.showBoxes then
                 components.Box.Size = Vector2.new(width, height)
                 components.Box.Position = Vector2.new(hrpPosition.X - width / 2, hrpPosition.Y - height / 2)
+                components.Box.Color = espColor
                 components.Box.Visible = true
             else
                 components.Box.Visible = false
@@ -143,6 +166,7 @@ function ESP:updateComponents(components, character, player)
             if self.showTracers then
                 components.Tracer.From = tracerStart
                 components.Tracer.To = Vector2.new(hrpPosition.X, hrpPosition.Y + height / 2)
+                components.Tracer.Color = espColor
                 components.Tracer.Visible = true
             else
                 components.Tracer.Visible = false
@@ -160,7 +184,7 @@ function ESP:updateComponents(components, character, player)
                 local teamColor = player.Team and player.Team.TeamColor.Color or Color3.fromRGB(255, 255, 255)
                 components.NameLabel.Text = string.format("[%s]", player.Name)
                 components.NameLabel.Position = Vector2.new(hrpPosition.X, hrpPosition.Y - height / 2 - 15)
-                components.NameLabel.Color = teamColor
+                components.NameLabel.Color = espColor
                 components.NameLabel.Visible = true
             else
                 components.NameLabel.Visible = false
