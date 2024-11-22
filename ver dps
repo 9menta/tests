@@ -314,7 +314,7 @@ function Update:Window(text,logo,keybind)
     BtnStroke.Name = "BtnStroke"
     BtnStroke.Parent = Main
     BtnStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    BtnStroke.Color = Color3.fromRGB(30, 255, 0)
+    BtnStroke.Color = Color3.fromRGB(0, 255, 21)
     BtnStroke.LineJoinMode = Enum.LineJoinMode.Round
     BtnStroke.Thickness = 1
     BtnStroke.Transparency = 0
@@ -434,7 +434,7 @@ function Update:Window(text,logo,keybind)
     ScrollTab.Name = "ScrollTab"
     ScrollTab.Parent = Tab
     ScrollTab.Active = true
-    ScrollTab.BackgroundColor3 = Color3.fromRGB(30, 255, 0)
+    ScrollTab.BackgroundColor3 = Color3.fromRGB(0, 255, 21)
     ScrollTab.BackgroundTransparency = 1.000
     ScrollTab.Size = UDim2.new(0, 133, 0, 203)
     ScrollTab.CanvasSize = UDim2.new(0, 0, 0, 0)
@@ -557,7 +557,7 @@ Page.Image = "http://www.roblox.com/asset/?id=" .. tostring(97251098174064)
         BtnStroke.Name = "BtnStroke"
         BtnStroke.Parent = TabButton
         BtnStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-        BtnStroke.Color = Color3.fromRGB(30, 255, 0)
+        BtnStroke.Color = Color3.fromRGB(0, 255, 21)
         BtnStroke.LineJoinMode = Enum.LineJoinMode.Round
         BtnStroke.Thickness = 1
         BtnStroke.Transparency = 0
@@ -658,14 +658,14 @@ Page.Image = "http://www.roblox.com/asset/?id=" .. tostring(97251098174064)
 
         NotificationHold.Name = "NotificationHold"
         NotificationHold.Parent = Main
-        NotificationHold.BackgroundColor3 = Color3.new(170, 0, 255)
+        NotificationHold.BackgroundColor3 = Color3.new(0, 1, 0.06666666666666667)
         NotificationHold.BackgroundTransparency = 1
         NotificationHold.BorderSizePixel = 0
         NotificationHold.Size = UDim2.new(0, 589, 0, 378)
         NotificationHold.AutoButtonColor = false
         NotificationHold.Font = Enum.Font.SourceSans
         NotificationHold.Text = ""
-        NotificationHold.TextColor3 = Color3.new(125,0,125)
+        NotificationHold.TextColor3 = Color3.new(0.3686274509803922, 1, 0.12156862745098039)
         NotificationHold.TextSize = 13.000
 
         TweenService:Create(NotificationHold, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
@@ -677,7 +677,7 @@ Page.Image = "http://www.roblox.com/asset/?id=" .. tostring(97251098174064)
         NotificationFrame.Parent = NotificationHold
         NotificationFrame.AnchorPoint = Vector2.new(0.5, 0.5)
         NotificationFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-        NotificationFrame.BorderColor3 = Color3.new(125,0,125)
+        NotificationFrame.BorderColor3 = Color3.new(0.3686274509803922, 1, 0.12156862745098039)
         NotificationFrame.BorderSizePixel = 0
         NotificationFrame.Transparency = 0
         NotificationFrame.ClipsDescendants = true
@@ -693,7 +693,7 @@ Page.Image = "http://www.roblox.com/asset/?id=" .. tostring(97251098174064)
         NotifHolderUIStroke.Name = "NotifHolderUIStroke"
         NotifHolderUIStroke.Parent = NotificationFrame
         NotifHolderUIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-        NotifHolderUIStroke.Color = Color3.new(125,0,125)
+        NotifHolderUIStroke.Color = Color3.new(0.3686274509803922, 1, 0.12156862745098039)
         NotifHolderUIStroke.LineJoinMode = Enum.LineJoinMode.Round
         NotifHolderUIStroke.Thickness = 2
         NotifHolderUIStroke.Transparency = 0
@@ -704,13 +704,13 @@ Page.Image = "http://www.roblox.com/asset/?id=" .. tostring(97251098174064)
         OkayBtn.Parent = NotificationFrame
         OkayBtn.BackgroundColor3 = Color3.fromRGB(190, 190, 190)
         OkayBtn.BorderSizePixel = 2
-        OkayBtn.BorderColor3 = Color3.new(125,0,125)
+        OkayBtn.BorderColor3 = Color3.new(0.3686274509803922, 1, 0.12156862745098039)
         OkayBtn.Position = UDim2.new(0, 125, 0, 190)
         OkayBtn.Size = UDim2.new(0, 150, 0, 30)
         OkayBtn.AutoButtonColor = true
         OkayBtn.Font = Enum.Font.SourceSans
         OkayBtn.Text = ""
-        OkayBtn.TextColor3 = Color3.new(125,0,125)
+        OkayBtn.TextColor3 = Color3.new(0.3686274509803922, 1, 0.12156862745098039)
         OkayBtn.TextSize = 13.000
 
         OkayBtnCorner.CornerRadius = UDim.new(0, 5)
@@ -719,7 +719,7 @@ Page.Image = "http://www.roblox.com/asset/?id=" .. tostring(97251098174064)
 
         OkayBtnTitle.Name = "OkayBtnTitle"
         OkayBtnTitle.Parent = OkayBtn
-        OkayBtnTitle.BackgroundColor3 = Color3.new(125,0,125)
+        OkayBtnTitle.BackgroundColor3 = Color3.new(0.3686274509803922, 1, 0.12156862745098039)
         OkayBtnTitle.BackgroundTransparency = 1.000
         OkayBtnTitle.Size = UDim2.new(0, 150, 0, 30)
         OkayBtnTitle.Text = "OK"
@@ -729,7 +729,7 @@ Page.Image = "http://www.roblox.com/asset/?id=" .. tostring(97251098174064)
 
         NotificationTitle.Name = "NotificationTitle"
         NotificationTitle.Parent = NotificationFrame
-        NotificationTitle.BackgroundColor3 = Color3.new(125,0,125)
+        NotificationTitle.BackgroundColor3 = Color3.new(0.3686274509803922, 1, 0.12156862745098039)
         NotificationTitle.BackgroundTransparency = 1.000
         NotificationTitle.Position = UDim2.new(0, 0, 0, 10)
         NotificationTitle.Size = UDim2.new(0, 400, 0, 25)
@@ -741,7 +741,7 @@ Page.Image = "http://www.roblox.com/asset/?id=" .. tostring(97251098174064)
 
         Line.Name = "Line"
         Line.Parent = NotificationFrame
-        Line.BackgroundColor3 = Color3.new(125,0,125)
+        Line.BackgroundColor3 = Color3.new(0.3686274509803922, 1, 0.12156862745098039)
         Line.BorderSizePixel = 0
         Line.Position = UDim2.new(0, 10, 0, 40)
         Line.Size = UDim2.new(0, 380, 0, 1)
@@ -755,7 +755,7 @@ Page.Image = "http://www.roblox.com/asset/?id=" .. tostring(97251098174064)
         NotificationDesc.Font = Enum.Font.GothamSemibold
         NotificationDesc.Text = textdesc
         NotificationDesc.TextScaled = false
-        NotificationDesc.TextColor3 = Color3.new(125,0,125)
+        NotificationDesc.TextColor3 = Color3.new(0.3686274509803922, 1, 0.12156862745098039)
         NotificationDesc.TextSize = 16.000
         NotificationDesc.TextWrapped = true
         NotificationDesc.TextXAlignment = Enum.TextXAlignment.Center
@@ -802,7 +802,7 @@ Page.Image = "http://www.roblox.com/asset/?id=" .. tostring(97251098174064)
 
         Button.Name = "Button"
         Button.Parent = MainFramePage
-        Button.BackgroundColor3 = Color3.fromRGB(30, 255, 0)
+        Button.BackgroundColor3 = Color3.fromRGB(0, 255, 21)
         Button.Size = UDim2.new(0, 387, 0, 31)
 
         UICorner.CornerRadius = UDim.new(0, 5)
@@ -919,7 +919,7 @@ Page.Image = "http://www.roblox.com/asset/?id=" .. tostring(97251098174064)
         UIStroke.Name = "UIStroke"
         UIStroke.Parent = CheckFrame2
         UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-        UIStroke.Color = Color3.fromRGB(30, 255, 0)
+        UIStroke.Color = Color3.fromRGB(0, 255, 21)
         UIStroke.LineJoinMode = Enum.LineJoinMode.Round
         UIStroke.Thickness = 1
         UIStroke.Transparency = 0
@@ -1032,7 +1032,7 @@ Page.Image = "http://www.roblox.com/asset/?id=" .. tostring(97251098174064)
         UIStroke.Name = "UIStroke"
         UIStroke.Parent = Dropdown
         UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-        UIStroke.Color = Color3.fromRGB(30, 255, 0)
+        UIStroke.Color = Color3.fromRGB(0, 255, 21)
         UIStroke.LineJoinMode = Enum.LineJoinMode.Round
         UIStroke.Thickness = 1
         UIStroke.Transparency = 0
@@ -1055,7 +1055,7 @@ Page.Image = "http://www.roblox.com/asset/?id=" .. tostring(97251098174064)
         DropScroll.Name = "DropScroll"
         DropScroll.Parent = DropTitle
         DropScroll.Active = true
-        DropScroll.BackgroundColor3 = Color3.fromRGB(30, 255, 0)
+        DropScroll.BackgroundColor3 = Color3.fromRGB(0, 255, 21)
         DropScroll.BackgroundTransparency = 1.000
         DropScroll.BorderSizePixel = 0
         DropScroll.Position = UDim2.new(0, 0, 0, 31)
@@ -1073,7 +1073,7 @@ Page.Image = "http://www.roblox.com/asset/?id=" .. tostring(97251098174064)
 
         DropButton.Name = "DropButton"
         DropButton.Parent = Dropdown
-        DropButton.BackgroundColor3 = Color3.fromRGB(30, 255, 0)
+        DropButton.BackgroundColor3 = Color3.fromRGB(0, 255, 21)
         DropButton.BackgroundTransparency = 1.000
         DropButton.Size = UDim2.new(0, 385, 0, 31)
         DropButton.Font = Enum.Font.SourceSans
@@ -1257,7 +1257,7 @@ Page.Image = "http://www.roblox.com/asset/?id=" .. tostring(97251098174064)
         -- Prop --
         SliderFrame.Name = slidertitle or "SliderFrame"
         SliderFrame.Parent = MainFramePage
-        SliderFrame.BackgroundColor3 = Color3.fromRGB(30, 255, 0)
+        SliderFrame.BackgroundColor3 = Color3.fromRGB(0, 255, 21)
         SliderFrame.BackgroundTransparency = 1.000
         SliderFrame.BorderSizePixel = 0
         SliderFrame.Size = UDim2.new(0, 387, 0, 60)
@@ -1273,7 +1273,7 @@ Page.Image = "http://www.roblox.com/asset/?id=" .. tostring(97251098174064)
         UIStroke.Name = "UIStroke"
         UIStroke.Parent = SliderFrame_2
         UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-        UIStroke.Color = Color3.fromRGB(30, 255, 0)
+        UIStroke.Color = Color3.fromRGB(0, 255, 21)
         UIStroke.LineJoinMode = Enum.LineJoinMode.Round
         UIStroke.Thickness = 1
         UIStroke.Transparency = 0
@@ -1324,7 +1324,7 @@ Page.Image = "http://www.roblox.com/asset/?id=" .. tostring(97251098174064)
     
         SliderCount.Name = "SliderCount"
         SliderCount.Parent = SliderButton
-        SliderCount.BackgroundColor3 = Color3.fromRGB(30, 255, 0)
+        SliderCount.BackgroundColor3 = Color3.fromRGB(0, 255, 21)
         SliderCount.BackgroundTransparency = 0.3
         SliderCount.BorderSizePixel = 0
         SliderCount.Position = UDim2.new(0,start,0,0)
@@ -1353,7 +1353,7 @@ Page.Image = "http://www.roblox.com/asset/?id=" .. tostring(97251098174064)
         SliderStroke.Name = "SliderStroke"
         SliderStroke.Parent = BoxFrame
         SliderStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-        SliderStroke.Color = Color3.fromRGB(30, 255, 0)
+        SliderStroke.Color = Color3.fromRGB(0, 255, 21)
         SliderStroke.LineJoinMode = Enum.LineJoinMode.Round
         SliderStroke.Thickness = 1
         SliderStroke.Transparency = 0.5
@@ -1575,7 +1575,7 @@ Page.Image = "http://www.roblox.com/asset/?id=" .. tostring(97251098174064)
 
         Textbox.Name = "Textbox"
         Textbox.Parent = MainFramePage
-        Textbox.BackgroundColor3 = Color3.new(170, 0, 255)
+        Textbox.BackgroundColor3 = Color3.new(0, 1, 0.06666666666666667)
         Textbox.BackgroundTransparency = 0
         Textbox.Size = UDim2.new(0, 387, 0, 31)
 
@@ -1704,7 +1704,7 @@ Page.Image = "http://www.roblox.com/asset/?id=" .. tostring(97251098174064)
         
         Textbox.Name = "Textbox"
         Textbox.Parent = MainFramePage
-        Textbox.BackgroundColor3 = Color3.new(170, 0, 255)
+        Textbox.BackgroundColor3 = Color3.new(0, 1, 0.06666666666666667)
         Textbox.BackgroundTransparency = 0
         Textbox.Size = UDim2.new(0, 387, 0, 31)
         
@@ -1724,7 +1724,7 @@ Page.Image = "http://www.roblox.com/asset/?id=" .. tostring(97251098174064)
         
         TextboxLabel.Name = "TextboxLabel"
         TextboxLabel.Parent = Textbox
-        TextboxLabel.BackgroundColor3 = Color3.fromRGB(30, 255, 0)
+        TextboxLabel.BackgroundColor3 = Color3.fromRGB(0, 255, 21)
         TextboxLabel.BackgroundTransparency = 1.000
         TextboxLabel.Position = UDim2.new(0, 15, 0, 0)
         TextboxLabel.Text = text
@@ -1754,7 +1754,7 @@ Page.Image = "http://www.roblox.com/asset/?id=" .. tostring(97251098174064)
         RealTextbox.Size = UDim2.new(0, 100, 0, 24)
         RealTextbox.Font = Enum.Font.GothamSemibold
         RealTextbox.Text = ""
-        RealTextbox.TextColor3 = Color3.fromRGB(30, 255, 0)
+        RealTextbox.TextColor3 = Color3.fromRGB(0, 255, 21)
         RealTextbox.TextSize = 11.000
         RealTextbox.TextTransparency = 0
 
@@ -1873,7 +1873,7 @@ Page.Image = "http://www.roblox.com/asset/?id=" .. tostring(97251098174064)
 
         Sep1.Name = "Sep1"
         Sep1.Parent = Seperator
-        Sep1.BackgroundColor3 = Color3.new(170, 0, 255)
+        Sep1.BackgroundColor3 = Color3.new(0, 1, 0.06666666666666667)
         Sep1.BorderSizePixel = 0
         Sep1.Position = UDim2.new(0, 0, 0, 10)
         Sep1.Size = UDim2.new(0, 80, 0, 1)
@@ -1891,7 +1891,7 @@ Page.Image = "http://www.roblox.com/asset/?id=" .. tostring(97251098174064)
 
         Sep3.Name = "Sep3"
         Sep3.Parent = Seperator
-        Sep3.BackgroundColor3 = Color3.new(170, 0, 255)
+        Sep3.BackgroundColor3 = Color3.new(0, 1, 0.06666666666666667)
         Sep3.BorderSizePixel = 0
         Sep3.Position = UDim2.new(0, 300, 0, 10)
         Sep3.Size = UDim2.new(0, 80, 0, 1)
@@ -1910,7 +1910,7 @@ Page.Image = "http://www.roblox.com/asset/?id=" .. tostring(97251098174064)
         
         Line.Name = "Line"
         Line.Parent = Linee
-        Line.BackgroundColor3 = Color3.new(170, 0, 255)
+        Line.BackgroundColor3 = Color3.new(0, 1, 0.06666666666666667)
         Line.BorderSizePixel = 0
         Line.Position = UDim2.new(0, 0, 0, 10)
         Line.Size = UDim2.new(0, 410, 0, 1)
@@ -2805,14 +2805,14 @@ function UpdateFlowerChams()
 						name.TextYAlignment = 'Top'
 						name.BackgroundTransparency = 1
 						name.TextStrokeTransparency = 0.5
-						name.TextColor3 = Color3.fromRGB(30, 255, 0)
+						name.TextColor3 = Color3.fromRGB(0, 255, 21)
 						if v.Name == "Flower1" then 
 							name.Text = ("Blue Flower" ..' \n'.. round((game:GetService('Players').LocalPlayer.Character.Head.Position - v.Position).Magnitude/3) ..' Distance')
 							name.TextColor3 = Color3.fromRGB(0, 0, 255)
 						end
 						if v.Name == "Flower2" then
 							name.Text = ("Red Flower" ..' \n'.. round((game:GetService('Players').LocalPlayer.Character.Head.Position - v.Position).Magnitude/3) ..' Distance')
-							name.TextColor3 = Color3.fromRGB(30, 255, 0)
+							name.TextColor3 = Color3.fromRGB(0, 255, 21)
 						end
 					else
 						v['NameEsp'..Number].TextLabel.Text = (v.Name ..'   \n'.. round((game:GetService('Players').LocalPlayer.Character.Head.Position - v.Position).Magnitude/3) ..' Distance')
@@ -2845,7 +2845,7 @@ function UpdateRealFruitChams()
 					name.TextYAlignment = 'Top'
 					name.BackgroundTransparency = 1
 					name.TextStrokeTransparency = 0.5
-					name.TextColor3 = Color3.fromRGB(30, 255, 0)
+					name.TextColor3 = Color3.fromRGB(0, 255, 21)
 					name.Text = (v.Name ..' \n'.. round((game:GetService('Players').LocalPlayer.Character.Head.Position - v.Handle.Position).Magnitude/3) ..' Distance')
 				else
 					v.Handle['NameEsp'..Number].TextLabel.Text = (v.Name ..' '.. round((game:GetService('Players').LocalPlayer.Character.Head.Position - v.Handle.Position).Magnitude/3) ..' Distance')
