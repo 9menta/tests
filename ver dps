@@ -14572,25 +14572,29 @@ local function CreateKeySystem()
     UICorner.Parent = mainFrame
     
     local title = Instance.new("TextLabel")
-    title.Size = UDim2.new(1, 0, 0, 30)
-    title.Position = UDim2.new(0, 0, 0, 10)
-    title.BackgroundTransparency = 1
-    title.Text = "Key System"
-    title.TextColor3 = Color3.fromRGB(255, 255, 255)
-    title.TextSize = 20
-    title.Font = Enum.Font.GothamBold
-    title.Parent = mainFrame
-    
-    -- Adicionar texto explicativo
-    local infoLabel = Instance.new("TextLabel")
-    infoLabel.Size = UDim2.new(1, 0, 0, 50)
-    infoLabel.Position = UDim2.new(0, 0, 0.45, 0)
-    infoLabel.Text = "Click 'Get Key' button to get your key!"
-    infoLabel.Font = Enum.Font.Gotham
-    infoLabel.TextSize = 16
-    infoLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
-    infoLabel.BackgroundTransparency = 1
-    infoLabel.Parent = mainFrame
+title.Size = UDim2.new(1, 0, 0, 30)
+title.Position = UDim2.new(0, 0, 0, 10)
+title.BackgroundTransparency = 1
+title.Text = "Key System"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextSize = 20
+title.Font = Enum.Font.GothamBold
+title.Parent = mainFrame
+
+-- Texto explicativo (corrigido)
+local infoLabel = Instance.new("TextLabel")
+infoLabel.Size = UDim2.new(1, 0, 0, 50)
+infoLabel.Position = UDim2.new(0, 0, 0.2, 0) -- Alterado para ficar abaixo do título
+infoLabel.Text = "Click 'Get Key' button to get your key!"
+infoLabel.Font = Enum.Font.Gotham
+infoLabel.TextSize = 16
+infoLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+infoLabel.BackgroundTransparency = 1
+infoLabel.Parent = mainFrame
+
+local keyBox = Instance.new("TextBox")
+keyBox.Size = UDim2.new(0.8, 0, 0, 30)
+keyBox.Position = UDim2.new(0.1, 0, 0.3, 0)
     
     local keyBox = Instance.new("TextBox")
     keyBox.Size = UDim2.new(0.8, 0, 0, 30)
