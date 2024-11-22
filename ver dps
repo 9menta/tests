@@ -1,35 +1,481 @@
--- Carrega o sistema de UI do arquivo remoto
-    local KeySystem = loadstring(game:HttpGet("https://raw.githubusercontent.com/9menta/Archives/refs/heads/main/KeySystem"))()
-
 -- Configuração do KeyGuardian
-local KeyGuardLibrary = loadstring(game:HttpGet("https://cdn.keyguardian.org/library/v1.0.0.lua"))()
-local trueData = "3dc5d2c959f04b44b917944c6e633f7d"
-local falseData = "d0bdf9ed15b848e8978a37a975827e00"
-
-KeyGuardLibrary.Set({
-    publicToken = "a9ce64c8c82941d786bbbfc069657df8",
-    privateToken = "2788e5bc487342a5acff5c0896211060",
-    trueData = trueData,
-    falseData = falseData,
-})
-
-    -- Configuração da janela de key
-    local Window = KeySystem:CreateWindow({
-        Title = "Sistema de Key",
-        Subtitle = "Autenticação",
-        Note = "Entre com sua key para continuar",
-        KeyNote = "Obtenha sua key no Discord",
-        FileName = "Key", -- Nome do arquivo para salvar a key
-    })
+    local KeyGuardLibrary = loadstring(game:HttpGet("https://cdn.keyguardian.org/library/v1.0.0.lua"))()
+    local trueData = "3dc5d2c959f04b44b917944c6e633f7d"
+    local falseData = "d0bdf9ed15b848e8978a37a975827e00"
     
-    -- Função para verificar a key
-    Window:Prompt({
-        Title = "Verificação de Key",
-        SubTitle = "Por favor insira sua key",
+    -- Configurar tokens
+    KeyGuardLibrary.Set({
+        publicToken = "a9ce64c8c82941d786bbbfc069657df8",
+        privateToken = "2788e5bc487342a5acff5c0896211060",
+        trueData = trueData,
+        falseData = falseData,
+    })
+
+------------- Não mexer acima
+
+------------------------- Separação
+    
+    local function CreateNotification(text, type)
+        local notifGui = Instance.new("ScreenGui")
+        notifGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
         
-        -- Callbacks
-        Passed = function(key)
+        local notifFrame = Instance.new("Frame")
+        notifFrame.Size = UDim2.new(0, 300, 0, 80)
+        notifFrame.Position = UDim2.new(1, 20, 0.8, 0)  -- Começa fora da tela
+        notifFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+        notifFrame.BorderSizePixel = 0
+        notifFrame.Parent = notifGui
+        
+        local UICorner = Instance.new("UICorner")
+        UICorner.CornerRadius = UDim.new(0, 8)
+        UICorner.Parent = notifFrame
+        
+        -- Linha colorida na lateral
+        local colorBar = Instance.new("Frame")
+        colorBar.Size = UDim2.new(0, 4, 1, 0)
+        colorBar.BackgroundColor3 = type == "success" and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+        colorBar.BorderSizePixel = 0
+        colorBar.Parent = notifFrame
+        
+        local UICornerBar = Instance.new("UICorner")
+        UICornerBar.CornerRadius = UDim.new(0, 4)
+        UICornerBar.Parent = colorBar
+        
+        local textLabel = Instance.new("TextLabel")
+        textLabel.Size = UDim2.new(0.9, 0, 1, 0)
+        textLabel.Position = UDim2.new(0.1, 0, 0, 0)
+        textLabel.Text = text
+        textLabel.Font = Enum.Font.GothamBold
+        textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        textLabel.TextSize = 14
+        textLabel.BackgroundTransparency = 1
+        textLabel.Parent = notifFrame
+        
+        -- Animação de entrada
+        local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+        local tween = game:GetService("TweenService"):Create(notifFrame, tweenInfo, {
+            Position = UDim2.new(1, -320, 0.8, 0)
+        })
+        tween:Play()
+        
+        -- Animação de saída após 2 segundos
+        wait(2)
+        local tweenOut = game:GetService("TweenService"):Create(notifFrame, tweenInfo, {
+            Position = UDim2.new(1, 20, 0.8, 0)
+        })
+        tweenOut:Play()
+        
+        tweenOut.Completed:Connect(function()
+            notifGui:Destroy()
+        end)
+    end
+    
+    -- Depois definimos a função CheckSystem
+    local function CheckSystem()
+        -- Cria uma função para verificar se uma feature está disponível
+        local function checkFeature(feature, name)
+            local success = pcall(function()
+                if feature == "TweenService" then
+                    game:GetService("TweenService")
+                elseif feature == "UserInputService" then
+                    game:GetService("UserInputService")
+                elseif feature == "TextService" then
+                    game:GetService("TextService")
+                elseif feature == "setclipboard" then
+                    setclipboard("test")
+                elseif feature == "Instance.new" then
+                    local test = Instance.new("Frame")
+                    test:Destroy()
+                elseif feature == "PlayerGui" then
+                    game.Players.LocalPlayer:WaitForChild("PlayerGui")
+                end
+            end)
+            
+            print(string.format("🔍[UI] Check of \"%s\" was %s", name, 
+                success and "✅ passed" or "❌ failed"))
+            
+            return success
+        end
+        
+        print("⚡[UI] Starting UI components check")
+        
+        -- Lista das features que sua UI utiliza
+        local features = {
+            {func = "TweenService", name = "TweenService"},
+            {func = "UserInputService", name = "UserInputService"},
+            {func = "TextService", name = "TextService"},
+            {func = "setclipboard", name = "Clipboard Function"},
+            {func = "Instance.new", name = "Instance Creation"},
+            {func = "PlayerGui", name = "PlayerGui Access"}
+        }
+        
+        local passedCount = 0
+        
+        for _, feature in ipairs(features) do
+            if checkFeature(feature.func, feature.name) then
+                passedCount = passedCount + 1
+            end
+            wait(0.1)
+        end
+        
+        local successRate = (passedCount / #features) * 100
+        print(string.format("📊[UI] Checked with a %.0f%% success rate (%d out of %d)", 
+            successRate, passedCount, #features))
+        
+        print("🔄[Key System] Loading...")
+        wait(0.5)
+        
+        local startTime = os.clock()
+        wait(0.1)
+        local endTime = os.clock()
+        
+        print(string.format("✅[Key System] Loaded in %.2f seconds", endTime - startTime))
+        
+        return passedCount == #features
+    end
+    
+    -- Depois definimos a função CreateKeyWindow
+    local function CreateKeyWindow(settings)
+        -- Primeiro fazemos a verificação do sistema
+        local systemCheck = CheckSystem()
+        if not systemCheck then
+            warn("⚠️ Some required features are not available!")
+            return
+        end
+        
+        -- Configuração do KeyGuardian
+        local KeyGuardLibrary = loadstring(game:HttpGet("https://cdn.keyguardian.org/library/v1.0.0.lua"))()
+        local trueData = "3dc5d2c959f04b44b917944c6e633f7d" 
+        local falseData = "d0bdf9ed15b848e8978a37a975827e00"
+        
+        -- Configurar tokens
+        KeyGuardLibrary.Set({
+            publicToken = "a9ce64c8c82941d786bbbfc069657df8",
+            privateToken = "2788e5bc487342a5acff5c0896211060", 
+            trueData = trueData,
+            falseData = falseData,
+        })
+    
+        -- Botão Get Key
+        getKeyButton.MouseButton1Click:Connect(function()
+            local getKeyLink = KeyGuardLibrary.getLink()
+            setclipboard(getKeyLink)
+            CreateNotification("Link copied to clipboard!", "success")
+        end)
+    
+        -- Botão Check Key 
+        checkKeyButton.MouseButton1Click:Connect(function()
+            local enteredKey = textBox.Text
+            local response = KeyGuardLibrary.validateDefaultKey(enteredKey)
+            
+            if response == trueData then
+                CreateNotification("Key valid! Script loading...", "success")
+                -- Animação de sucesso
+                TweenService:Create(frame, TweenInfo.new(0.5), {BackgroundColor3 = Color3.fromRGB(40, 80, 40)}):Play()
+                wait(0.5)
+                TweenService:Create(frame, TweenInfo.new(0.5), {BackgroundColor3 = Color3.fromRGB(35, 35, 35)}):Play()
+                if settings.Passed then
+                    settings.Passed()
+                end
+            else
+                CreateNotification("Key invalid! Try again.", "error")
+                shake(frame)
+                if settings.Failed then
+                    settings.Failed()
+                end
+            end
+        end)
+        
+        local UserInputService = game:GetService("UserInputService")
+        local TweenService = game:GetService("TweenService")
+        local RunService = game:GetService("RunService")
+        local LocalPlayer = game:GetService("Players").LocalPlayer
+        local Mouse = LocalPlayer:GetMouse()
+        local HttpService = game:GetService("HttpService")
+    
+        local screenGui = Instance.new("ScreenGui")
+        screenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+    
+        -- Adicionar animações
+        local function fadeIn(obj)
+            obj.BackgroundTransparency = 1
+            local tween = TweenService:Create(obj, TweenInfo.new(0.3), {BackgroundTransparency = 0})
+            tween:Play()
+        end
+    
+        local function shake(obj)
+            local originalPosition = obj.Position
+            local shake = TweenService:Create(obj, TweenInfo.new(0.1, Enum.EasingStyle.Bounce, Enum.EasingDirection.InOut), {
+                Position = originalPosition + UDim2.new(0, 5, 0, 0)
+            })
+            shake:Play()
+            wait(0.1)
+            local shakeBack = TweenService:Create(obj, TweenInfo.new(0.1, Enum.EasingStyle.Bounce, Enum.EasingDirection.InOut), {
+                Position = originalPosition
+            })
+            shakeBack:Play()
+        end
+    
+        -- Frame principal com sistema de drag
+        local frame = Instance.new("Frame")
+        frame.Size = UDim2.new(0, 400, 0, 200)
+        frame.Position = UDim2.new(0.5, -200, 0.5, -100)
+        frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+        frame.BorderSizePixel = 0
+        frame.ClipsDescendants = true
+        frame.Parent = screenGui
+    
+        -- Sistema de drag
+        local dragging
+        local dragInput
+        local dragStart
+        local startPos
+    
+        local function update(input)
+            local delta = input.Position - dragStart
+            local position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
+                startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+            local tweenInfo = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+            TweenService:Create(frame, tweenInfo, {Position = position}):Play()
+        end
+    
+        frame.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                dragging = true
+                dragStart = input.Position
+                startPos = frame.Position
+            end
+        end)
+    
+        frame.InputEnded:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                dragging = false
+            end
+        end)
+    
+        frame.InputChanged:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseMovement then
+                dragInput = input
+            end
+        end)
+    
+        UserInputService.InputChanged:Connect(function(input)
+            if input == dragInput and dragging then
+                update(input)
+            end
+        end)
+    
+        -- Mensagens de status (Key invalid e Link copied)
+        local statusLabel = Instance.new("TextLabel")
+        statusLabel.Size = UDim2.new(0.8, 0, 0, 30)
+        statusLabel.Position = UDim2.new(0.1, 0, 0.6, 0)
+        statusLabel.Text = ""
+        statusLabel.Font = Enum.Font.GothamBold
+        statusLabel.TextSize = 16
+        statusLabel.BackgroundTransparency = 1
+        statusLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+        statusLabel.Parent = frame
+    
+        -- Função para mostrar mensagem de status
+        local function showStatus(text, color, duration)
+            statusLabel.Text = text
+            statusLabel.TextColor3 = color
+            statusLabel.TextTransparency = 0
+            
+            -- Animação de fade in/out
+            TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 0}):Play()
+            wait(duration or 2)
+            TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 1}):Play()
+            wait(0.3)
+            statusLabel.Text = ""
+        end
+    
+        local UICorner = Instance.new("UICorner")
+        UICorner.CornerRadius = UDim.new(0, 8)
+        UICorner.Parent = frame
+    
+        local headerLabel = Instance.new("TextLabel")
+        headerLabel.Size = UDim2.new(1, 0, 0, 40)
+        headerLabel.Position = UDim2.new(0, 0, 0, 0)
+        headerLabel.Text = settings.Text.Title or "HG HUB Universal Script Solara"
+        headerLabel.Font = Enum.Font.GothamBold
+        headerLabel.TextSize = 24
+        headerLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        headerLabel.BackgroundTransparency = 1
+        headerLabel.Parent = frame
+    
+        -- Buat tombol close (X)
+        local closeButton = Instance.new("TextButton")
+        closeButton.Size = UDim2.new(0, 30, 0, 30)
+        closeButton.Position = UDim2.new(1, -35, 0, 5)
+        closeButton.Text = "X"
+        closeButton.Font = Enum.Font.GothamBold
+        closeButton.TextSize = 18
+        closeButton.TextColor3 = Color3.fromRGB(180, 180, 180)
+        closeButton.BackgroundTransparency = 1
+        closeButton.Parent = frame
+         closeButton.MouseButton1Click:Connect(function()
+            screenGui:Destroy()
+            if settings.Cancelled then
+                settings.Cancelled()
+            end
+        end)
+    
+        local label = Instance.new("TextLabel")
+        label.Size = UDim2.new(1, 0, 0, 50)
+        label.Position = UDim2.new(0, 0, 0, 30)
+        label.Text = "Click \"Get Key\" button to get your key!"
+        label.Font = Enum.Font.Gotham
+        label.TextSize = 16
+        label.TextColor3 = Color3.fromRGB(180, 180, 180)
+        label.BackgroundTransparency = 1
+        label.Parent = frame
+    
+        local textBox = Instance.new("TextBox")
+        textBox.Size = UDim2.new(0.8, 0, 0, 40)
+        textBox.Position = UDim2.new(0.1, 0, 0.4, 0)
+        textBox.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+        textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+        textBox.PlaceholderText = "Enter key"
+        textBox.PlaceholderColor3 = Color3.fromRGB(120, 120, 120)
+        textBox.Font = Enum.Font.Gotham
+        textBox.BorderSizePixel = 0
+        textBox.TextWrapped = true
+        textBox.Parent = frame
+    
+        local UICornerTextBox = Instance.new("UICorner")
+        UICornerTextBox.CornerRadius = UDim.new(0, 6)
+        UICornerTextBox.Parent = textBox
+    
+        local validationLabel = Instance.new("TextLabel")
+        validationLabel.Size = UDim2.new(0.8, 0, 0, 30)
+        validationLabel.Position = UDim2.new(0.1, 0, 0.6, 0)
+        validationLabel.Text = ""
+        validationLabel.Font = Enum.Font.GothamBold
+        validationLabel.TextSize = 18
+        validationLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+        validationLabel.BackgroundTransparency = 1
+        validationLabel.Parent = frame
+    
+    -- Para o botão Get Key
+       local getKeyButton = Instance.new("TextButton")
+       getKeyButton.Size = UDim2.new(0.35, 0, 0, 35)
+       getKeyButton.Position = UDim2.new(0.1, 0, 0.7, 0)
+       getKeyButton.Text = "Get Key"
+       getKeyButton.Font = Enum.Font.GothamBold
+       getKeyButton.TextSize = 18
+       getKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+       getKeyButton.BackgroundColor3 = Color3.fromRGB(40, 120, 40)
+       getKeyButton.BorderSizePixel = 1  -- Adicione esta linha
+       getKeyButton.BorderColor3 = Color3.fromRGB(180, 180, 180)  -- Adicione esta linha
+       getKeyButton.Parent = frame
+    
+    -- Para o botão Check Key
+       local checkKeyButton = Instance.new("TextButton")
+       checkKeyButton.Size = UDim2.new(0.35, 0, 0, 35)
+       checkKeyButton.Position = UDim2.new(0.55, 0, 0.7, 0)
+       checkKeyButton.Text = "Check Key"
+       checkKeyButton.Font = Enum.Font.GothamBold
+       checkKeyButton.TextSize = 18
+       checkKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+       checkKeyButton.BackgroundColor3 = Color3.fromRGB(50, 100, 180)
+       checkKeyButton.BorderSizePixel = 1  -- Adicione esta linha
+       checkKeyButton.BorderColor3 = Color3.fromRGB(180, 180, 180)  -- Adicione esta linha
+       checkKeyButton.Parent = frame
+    
+        -- Label untuk pesan "Link copied!"
+        local linkCopiedLabel = Instance.new("TextLabel")
+        linkCopiedLabel.Size = UDim2.new(0.8, 0, 0, 30)
+        linkCopiedLabel.Position = UDim2.new(0.1, 0, 0.8, 0)
+        linkCopiedLabel.Text = ""
+        linkCopiedLabel.Font = Enum.Font.SourceSansBold
+        linkCopiedLabel.TextSize = 18
+        linkCopiedLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+        linkCopiedLabel.BackgroundTransparency = 1
+        linkCopiedLabel.Parent = frame
+    
+        -- Fungsi untuk Get Key
+        getKeyButton.MouseButton1Click:Connect(function()
+            -- Mengarahkan ke link untuk mendapatkan key
+            local getKeyLink = settings.GetKeyLink or "https://example.com/"
+            setclipboard(getKeyLink)
+            CreateNotification("Link copied to clipboard!", "success")
+        end)
+    
+        -- Fungsi untuk Check Key
+        checkKeyButton.MouseButton1Click:Connect(function()
+            local enteredKey = textBox.Text
+            local currentKey = settings.KeySettings.Key
+            
+            if enteredKey == currentKey then
+                CreateNotification("Key valid! Script loading...", "success")
+                -- Animação de sucesso
+                TweenService:Create(frame, TweenInfo.new(0.5), {BackgroundColor3 = Color3.fromRGB(40, 80, 40)}):Play()
+                wait(0.5)
+                TweenService:Create(frame, TweenInfo.new(0.5), {BackgroundColor3 = Color3.fromRGB(35, 35, 35)}):Play()
+                if settings.Passed then
+                    settings.Passed()
+                end
+            else
+                CreateNotification("Key invalid! Try again.", "error")
+                shake(frame)
+                if settings.Failed then
+                    settings.Failed()
+                end
+            end
+        end)
+    
+        local UICornerGetKey = Instance.new("UICorner")
+        UICornerGetKey.CornerRadius = UDim.new(0, 6)
+        UICornerGetKey.Parent = getKeyButton
+    
+        local UICornerCheckKey = Instance.new("UICorner")
+        UICornerCheckKey.CornerRadius = UDim.new(0, 6)
+        UICornerCheckKey.Parent = checkKeyButton
+    
+        -- Animação inicial
+        frame.BackgroundTransparency = 1
+        frame.Position = UDim2.new(0.5, -200, 0.45, -100)
+        
+        for _, obj in pairs(frame:GetChildren()) do
+            if obj:IsA("GuiObject") then
+                obj.BackgroundTransparency = 1
+                obj.TextTransparency = 1
+            end
+        end
+    
+        local tweenInfo = TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+        TweenService:Create(frame, tweenInfo, {
+            BackgroundTransparency = 0,
+            Position = UDim2.new(0.5, -200, 0.5, -100)
+        }):Play()
+    
+        for _, obj in pairs(frame:GetChildren()) do
+            if obj:IsA("GuiObject") then
+                TweenService:Create(obj, TweenInfo.new(0.8), {
+                    BackgroundTransparency = obj.BackgroundTransparency == 1 and 1 or 0,
+                    TextTransparency = 0
+                }):Play()
+            end
+        end
+    
+        return {
+            Failed = function(callback)
+                settings.Failed = callback
+            end,
+            Passed = function(callback)
+                settings.Passed = callback
+            end,
+            Cancelled = function(callback)
+                settings.Cancelled = callback
+            end
+        }
+    end    
+
 --------------------------------------- Separação
+
+
+
 
 --------------------- So mexer abaixo caso for alterar algo na script ou fazer atualização
 
@@ -14104,33 +14550,3 @@ spawn(function()
 --------------------------------------- Separação
 
 --------------------- Não mexa abaixo
-end,
-    
-Failed = function()
-    -- Código para quando a key for inválida
-    game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "Key Inválida",
-        Text = "Por favor, insira uma key válida",
-        Duration = 5
-    })
-end,
-
-Cancelled = function()
-    -- Código para quando o usuário cancelar
-    game:GetService("Players").LocalPlayer:Kick("Verificação cancelada")
-end
-})
-
--- Botão para obter a key
-Window:AddButton({
-Name = "Obter Key",
-Callback = function()
-    local discordLink = "https://discord.gg/seuservidor"
-    setclipboard(discordLink)
-    game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "Link Copiado",
-        Text = "Link do Discord copiado para a área de transferência!",
-        Duration = 5
-    })
-end
-})
