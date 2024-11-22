@@ -1,4 +1,18 @@
-    
+            -- Configuração do KeyGuardian
+                local KeyGuardLibrary = loadstring(game:HttpGet("https://cdn.keyguardian.org/library/v1.0.0.lua"))()
+                local trueData = "6bcd9892962141afbe8a45d268b3005c"
+                local falseData = "7b953c07f9b84bdfaac28bb051e0a144"
+            
+                -- Configurar tokens
+                KeyGuardLibrary.Set({
+                 publicToken = "ab6c4465145d4a55bb417871047b2784",
+                 privateToken = "d545289f382443e29678810ce7a83d80",
+                 trueData = trueData,
+                 falseData = falseData,
+              })
+              
+-------------- Não mexer em cima
+
     local function CreateNotification(text, type)
         local notifGui = Instance.new("ScreenGui")
         notifGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
