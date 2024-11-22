@@ -136,12 +136,6 @@
     
     -- Depois definimos a função CreateKeyWindow
     local function CreateKeyWindow(settings)
-        -- Primeiro fazemos a verificação do sistema
-        local systemCheck = CheckSystem()
-        if not systemCheck then
-            warn("⚠️ Some required features are not available!")
-            return
-        end
         
         -- Configuração do KeyGuardian
         local KeyGuardLibrary = loadstring(game:HttpGet("https://cdn.keyguardian.org/library/v1.0.0.lua"))()
@@ -14575,7 +14569,7 @@ local function CreateKeySystem()
     title.Size = UDim2.new(1, 0, 0, 30)
     title.Position = UDim2.new(0, 0, 0, 10)
     title.BackgroundTransparency = 1
-    title.Text = "Key System"
+    title.Text = "Kszinn / Key System"
     title.TextColor3 = Color3.fromRGB(255, 255, 255)
     title.TextSize = 20
     title.Font = Enum.Font.GothamBold
