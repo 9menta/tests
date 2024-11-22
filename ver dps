@@ -14556,135 +14556,109 @@ end
 local function CreateKeySystem()
     local KeySystem = {}
     
--- Criar a UI do sistema de key
-local screenGui = Instance.new("ScreenGui")
-screenGui.Parent = game.CoreGui
-
-local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 300, 0, 200)
-mainFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
-mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-mainFrame.BorderSizePixel = 0
-mainFrame.Parent = screenGui
-
-local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 8)
-UICorner.Parent = mainFrame
-
-local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0, 30)
-title.Position = UDim2.new(0, 0, 0, 10)
-title.BackgroundTransparency = 1
-title.Text = "Key System"
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.TextSize = 20
-title.Font = Enum.Font.GothamBold
-title.Parent = mainFrame
-
-local keyBox = Instance.new("TextBox")
-keyBox.Size = UDim2.new(0.8, 0, 0, 30)
-keyBox.Position = UDim2.new(0.1, 0, 0.3, 0)
-keyBox.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-keyBox.BorderSizePixel = 0
-keyBox.Text = ""
-keyBox.PlaceholderText = "Enter Key"
-keyBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-keyBox.TextSize = 14
-keyBox.Font = Enum.Font.Gotham
-keyBox.Parent = mainFrame
-
-local UICorner2 = Instance.new("UICorner")
-UICorner2.CornerRadius = UDim.new(0, 6)
-UICorner2.Parent = keyBox
-
-local getKeyButton = Instance.new("TextButton")
-getKeyButton.Size = UDim2.new(0.4, -10, 0, 30)
-getKeyButton.Position = UDim2.new(0.1, 0, 0.6, 0)
-getKeyButton.BackgroundColor3 = Color3.fromRGB(0, 120, 0)
-getKeyButton.BorderSizePixel = 0
-getKeyButton.Text = "Get Key"
-getKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-getKeyButton.TextSize = 14
-getKeyButton.Font = Enum.Font.GothamBold
-getKeyButton.Parent = mainFrame
-
-local UICorner3 = Instance.new("UICorner")
-UICorner3.CornerRadius = UDim.new(0, 6)
-UICorner3.Parent = getKeyButton
-
-local checkKeyButton = Instance.new("TextButton")
-checkKeyButton.Size = UDim2.new(0.4, -10, 0, 30)
-checkKeyButton.Position = UDim2.new(0.5, 10, 0.6, 0)
-checkKeyButton.BackgroundColor3 = Color3.fromRGB(0, 100, 200)
-checkKeyButton.BorderSizePixel = 0
-checkKeyButton.Text = "Check Key"
-checkKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-checkKeyButton.TextSize = 14
-checkKeyButton.Font = Enum.Font.GothamBold
-checkKeyButton.Parent = mainFrame
-
-local UICorner4 = Instance.new("UICorner")
-UICorner4.CornerRadius = UDim.new(0, 6)
-UICorner4.Parent = checkKeyButton
-
--- Adicionar botão de fechar (X)
-local closeButton = Instance.new("TextButton")
-closeButton.Size = UDim2.new(0, 30, 0, 30)
-closeButton.Position = UDim2.new(1, -35, 0, 5)
-closeButton.Text = "X"
-closeButton.Font = Enum.Font.GothamBold
-closeButton.TextSize = 18
-closeButton.TextColor3 = Color3.fromRGB(180, 180, 180)
-closeButton.BackgroundTransparency = 1
-closeButton.Parent = mainFrame
-closeButton.MouseButton1Click:Connect(function()
-    screenGui:Destroy()
-    print("Sistema de key fechado pelo usuário.")
-end)
-
--- Adicionar texto explicativo
-local infoLabel = Instance.new("TextLabel")
-infoLabel.Size = UDim2.new(1, 0, 0, 50)
-infoLabel.Position = UDim2.new(0, 0, 0.45, 0)
-infoLabel.Text = "Click 'Get Key' button to get your key!"
-infoLabel.Font = Enum.Font.Gotham
-infoLabel.TextSize = 16
-infoLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
-infoLabel.BackgroundTransparency = 1
-infoLabel.Parent = mainFrame
-
--- Funções dos botões
-getKeyButton.MouseButton1Click:Connect(function()
-    local getKeyLink = KeyGuardLibrary.getLink()
-    setclipboard(getKeyLink)
-    print("Link copiado para a área de transferência.")
-end)
-
-checkKeyButton.MouseButton1Click:Connect(function()
-    local enteredKey = keyBox.Text
-    local response = KeyGuardLibrary.validateDefaultKey(enteredKey)
+    -- Criar a UI do sistema de key
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Parent = game.CoreGui
     
-    if response then
-        print("Key válida! Carregando script...")
-        screenGui:Destroy() -- Remove a UI do key system
-        ExecuteMainScript() -- Executa o script principal
-    else
-        print("Key inválida! Tente novamente.")
-        keyBox.Text = "" -- Limpa o campo de texto
+    local mainFrame = Instance.new("Frame")
+    mainFrame.Size = UDim2.new(0, 300, 0, 150)
+    mainFrame.Position = UDim2.new(0.5, -150, 0.5, -75)
+    mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    mainFrame.BorderSizePixel = 0
+    mainFrame.Parent = screenGui
+    
+    local UICorner = Instance.new("UICorner")
+    UICorner.CornerRadius = UDim.new(0, 8)
+    UICorner.Parent = mainFrame
+    
+    local title = Instance.new("TextLabel")
+    title.Size = UDim2.new(1, 0, 0, 30)
+    title.Position = UDim2.new(0, 0, 0, 10)
+    title.BackgroundTransparency = 1
+    title.Text = "Key System"
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.TextSize = 20
+    title.Font = Enum.Font.GothamBold
+    title.Parent = mainFrame
+    
+    local keyBox = Instance.new("TextBox")
+    keyBox.Size = UDim2.new(0.8, 0, 0, 30)
+    keyBox.Position = UDim2.new(0.1, 0, 0.3, 0)
+    keyBox.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    keyBox.BorderSizePixel = 0
+    keyBox.Text = ""
+    keyBox.PlaceholderText = "Enter Key"
+    keyBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    keyBox.TextSize = 14
+    keyBox.Font = Enum.Font.Gotham
+    keyBox.Parent = mainFrame
+    
+    local UICorner2 = Instance.new("UICorner")
+    UICorner2.CornerRadius = UDim.new(0, 6)
+    UICorner2.Parent = keyBox
+    
+    local getKeyButton = Instance.new("TextButton")
+    getKeyButton.Size = UDim2.new(0.4, -10, 0, 30)
+    getKeyButton.Position = UDim2.new(0.1, 0, 0.6, 0)
+    getKeyButton.BackgroundColor3 = Color3.fromRGB(0, 120, 0)
+    getKeyButton.BorderSizePixel = 0
+    getKeyButton.Text = "Get Key"
+    getKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    getKeyButton.TextSize = 14
+    getKeyButton.Font = Enum.Font.GothamBold
+    getKeyButton.Parent = mainFrame
+    
+    local UICorner3 = Instance.new("UICorner")
+    UICorner3.CornerRadius = UDim.new(0, 6)
+    UICorner3.Parent = getKeyButton
+    
+    local checkKeyButton = Instance.new("TextButton")
+    checkKeyButton.Size = UDim2.new(0.4, -10, 0, 30)
+    checkKeyButton.Position = UDim2.new(0.5, 10, 0.6, 0)
+    checkKeyButton.BackgroundColor3 = Color3.fromRGB(0, 100, 200)
+    checkKeyButton.BorderSizePixel = 0
+    checkKeyButton.Text = "Check Key"
+    checkKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    checkKeyButton.TextSize = 14
+    checkKeyButton.Font = Enum.Font.GothamBold
+    checkKeyButton.Parent = mainFrame
+    
+    local UICorner4 = Instance.new("UICorner")
+    UICorner4.CornerRadius = UDim.new(0, 6)
+    UICorner4.Parent = checkKeyButton
+    
+    -- Funções dos botões
+    getKeyButton.MouseButton1Click:Connect(function()
+        local getKeyLink = KeyGuardLibrary.getLink()
+        setclipboard(getKeyLink)
+        CreateNotification("Link copied to clipboard!", "success")
+    end)
+    
+    checkKeyButton.MouseButton1Click:Connect(function()
+        local enteredKey = keyBox.Text
+        local response = KeyGuardLibrary.validateDefaultKey(enteredKey)
+        
+        if response == trueData then
+            CreateNotification("Key valid! Loading script...", "success")
+            screenGui:Destroy() -- Remove a UI do key system
+            ExecuteMainScript() -- Executa o script principal
+        else
+            CreateNotification("Invalid key! Try again.", "error")
+            keyBox.Text = "" -- Limpa o campo de texto
+        end
+    end)
+    
+    -- Drag functionality
+    local UserInputService = game:GetService("UserInputService")
+    local dragging
+    local dragInput
+    local dragStart
+    local startPos
+    
+    local function update(input)
+        local delta = input.Position - dragStart
+        mainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
     end
-end)
-
--- Drag functionality
-local UserInputService = game:GetService("UserInputService")
-local dragging
-local dragInput
-local dragStart
-local startPos
-
-local function update(input)
-    local delta = input.Position - dragStart
-    mainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-end
     
     mainFrame.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
