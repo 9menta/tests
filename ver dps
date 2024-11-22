@@ -1,16 +1,48 @@
-            -- Configuração do KeyGuardian
-                local KeyGuardLibrary = loadstring(game:HttpGet("https://cdn.keyguardian.org/library/v1.0.0.lua"))()
-                local trueData = "6bcd9892962141afbe8a45d268b3005c"
-                local falseData = "7b953c07f9b84bdfaac28bb051e0a144"
+
+        
+        -- Configuração do KeyGuardian
+            local KeyGuardLibrary = loadstring(game:HttpGet("https://cdn.keyguardian.org/library/v1.0.0.lua"))()
+            local trueData = "6bcd9892962141afbe8a45d268b3005c"
+            local falseData = "7b953c07f9b84bdfaac28bb051e0a144"
+        
+            -- Configurar tokens
+            KeyGuardLibrary.Set({
+             publicToken = "ab6c4465145d4a55bb417871047b2784",
+             privateToken = "d545289f382443e29678810ce7a83d80",
+             trueData = trueData,
+             falseData = falseData,
+          })
+        
+            -- Botão Get Key
+            getKeyButton.MouseButton1Click:Connect(function()
+                local getKeyLink = KeyGuardLibrary.getLink()
+                setclipboard(getKeyLink)
+                CreateNotification("Link copied to clipboard!", "success")
+            end)
+        
+            -- Botão Check Key 
+            checkKeyButton.MouseButton1Click:Connect(function()
+                local enteredKey = textBox.Text
+                local response = KeyGuardLibrary.validateDefaultKey(enteredKey)
+                
+                if response == trueData then
+                    CreateNotification("Key valid! Script loading...", "success")
+                    -- Animação de sucesso
+                    TweenService:Create(frame, TweenInfo.new(0.5), {BackgroundColor3 = Color3.fromRGB(40, 80, 40)}):Play()
+                    wait(0.5)
+                    TweenService:Create(frame, TweenInfo.new(0.5), {BackgroundColor3 = Color3.fromRGB(35, 35, 35)}):Play()
+                    if settings.Passed then
+                        settings.Passed()
+                    end
+                else
+                    CreateNotification("Key invalid! Try again.", "error")
+                    shake(frame)
+                    if settings.Failed then
+                        settings.Failed()
+                    end
+                end
+            end)
             
-                -- Configurar tokens
-                KeyGuardLibrary.Set({
-                 publicToken = "ab6c4465145d4a55bb417871047b2784",
-                 privateToken = "d545289f382443e29678810ce7a83d80",
-                 trueData = trueData,
-                 falseData = falseData,
-              })
-              
 -------------- Não mexer em cima
 
     local function CreateNotification(text, type)
@@ -70,49 +102,6 @@
 
     -- Depois definimos a função CreateKeyWindow
     local function CreateKeyWindow(settings)
-        
-        -- Configuração do KeyGuardian
-        local KeyGuardLibrary = loadstring(game:HttpGet("https://cdn.keyguardian.org/library/v1.0.0.lua"))()
-        local trueData = "6bcd9892962141afbe8a45d268b3005c"
-        local falseData = "7b953c07f9b84bdfaac28bb051e0a144"
-    
-        -- Configurar tokens
-        KeyGuardLibrary.Set({
-         publicToken = "ab6c4465145d4a55bb417871047b2784",
-         privateToken = "d545289f382443e29678810ce7a83d80",
-         trueData = trueData,
-         falseData = falseData,
-      })
-    
-        -- Botão Get Key
-        getKeyButton.MouseButton1Click:Connect(function()
-            local getKeyLink = KeyGuardLibrary.getLink()
-            setclipboard(getKeyLink)
-            CreateNotification("Link copied to clipboard!", "success")
-        end)
-    
-        -- Botão Check Key 
-        checkKeyButton.MouseButton1Click:Connect(function()
-            local enteredKey = textBox.Text
-            local response = KeyGuardLibrary.validateDefaultKey(enteredKey)
-            
-            if response == trueData then
-                CreateNotification("Key valid! Script loading...", "success")
-                -- Animação de sucesso
-                TweenService:Create(frame, TweenInfo.new(0.5), {BackgroundColor3 = Color3.fromRGB(40, 80, 40)}):Play()
-                wait(0.5)
-                TweenService:Create(frame, TweenInfo.new(0.5), {BackgroundColor3 = Color3.fromRGB(35, 35, 35)}):Play()
-                if settings.Passed then
-                    settings.Passed()
-                end
-            else
-                CreateNotification("Key invalid! Try again.", "error")
-                shake(frame)
-                if settings.Failed then
-                    settings.Failed()
-                end
-            end
-        end)
         
         local UserInputService = game:GetService("UserInputService")
         local TweenService = game:GetService("TweenService")
