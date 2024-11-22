@@ -14579,7 +14579,7 @@ local function CreateKeySystem()
     title.TextColor3 = Color3.fromRGB(255, 255, 255)
     title.TextSize = 20
     title.Font = Enum.Font.GothamBold
-    title.Parent = mainFrame)
+    title.Parent = mainFrame
     
     -- Adicionar texto explicativo
     local infoLabel = Instance.new("TextLabel")
