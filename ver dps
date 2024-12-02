@@ -28,464 +28,245 @@ end
 
 function Library:Init(options)
     options = Library:validate({
-        name = "Elixir Library Test"
-    }, options or {}) -- if options == nil then give table otherwise give options // no caso caso você não configure as opções será fornecido as opções padrão
+        name = "Elixir Library"
+    }, options or {})
     
     local GUI = {
-        CurrentTab = nil
+        CurrentTab = nil,
+        Minimized = false
     }
     
-    -- ElixirLibary - O formato da Ui resumo o quadrado dela
-    
+    -- Main Frame
     do
-        -- StarterGui.ElixirLibary
-        GUI["1"] = Instance.new("ScreenGui", runService:IsStudio() and players.LocalPlayer:WaitForChild("PlayerGui") or coreGui);
-        GUI["1"]["Name"] = [[ElixirLibary]];
-        GUI["1"]["IgnoreGuiInset"] = true
+        GUI["1"] = Instance.new("ScreenGui", runService:IsStudio() and players.LocalPlayer:WaitForChild("PlayerGui") or coreGui)
+        GUI["1"].Name = "ElixirLibrary"
+        GUI["1"].IgnoreGuiInset = true
         
-        -- StarterGui.ElixirLibary.main
-        GUI["2"] = Instance.new("Frame", GUI["1"]);
-        GUI["2"]["BorderSizePixel"] = 0;
-        GUI["2"]["BackgroundColor3"] = Color3.fromRGB(21, 21, 21);
-        GUI["2"]["AnchorPoint"] = Vector2.new(0, 0);
-        GUI["2"]["Size"] = UDim2.new(0, 425, 0, 304);
-        GUI["2"]["Position"] = UDim2.fromOffset((viewport.X/2) - (GUI["2"].Size.X.Offset / 2), (viewport.Y/2) - (GUI["2"].Size.Y.Offset / 2));
-        GUI["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-        GUI["2"]["Name"] = [[main]];
+        GUI["2"] = Instance.new("Frame", GUI["1"])
+        GUI["2"].Name = "Main"
+        GUI["2"].BackgroundColor3 = Color3.fromRGB(21, 21, 21)
+        GUI["2"].BorderSizePixel = 0
+        GUI["2"].Position = UDim2.fromOffset((viewport.X/2) - 212, (viewport.Y/2) - 152)
+        GUI["2"].Size = UDim2.new(0, 425, 0, 304)
         
-        -- StarterGui.ElixirLibary.main.UICorner
-        GUI["3"] = Instance.new("UICorner", GUI["2"]);
-        GUI["3"]["CornerRadius"] = UDim.new(0, 10);
+        -- Corner & Shadow
+        GUI["3"] = Instance.new("UICorner", GUI["2"])
+        GUI["3"].CornerRadius = UDim.new(0, 10)
+        
+        local shadow = Instance.new("ImageLabel", GUI["2"])
+        shadow.Name = "Shadow"
+        shadow.AnchorPoint = Vector2.new(0.5, 0.5)
+        shadow.BackgroundTransparency = 1
+        shadow.Position = UDim2.new(0.5, 0, 0.5, 0)
+        shadow.Size = UDim2.new(1, 47, 1, 47)
+        shadow.ZIndex = 0
+        shadow.Image = "rbxassetid://6014261993"
+        shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+        shadow.ImageTransparency = 0.5
+        shadow.ScaleType = Enum.ScaleType.Slice
+        shadow.SliceCenter = Rect.new(49, 49, 450, 450)
     end
     
-    
-    -- DropShadow - Sombra em Volta da Ui
-    
+    -- TopBar
     do
-        -- StarterGui.ElixirLibary.main.DropShadowHolder
-        GUI["4"] = Instance.new("Frame", GUI["2"]);
-        GUI["4"]["ZIndex"] = 0;
-        GUI["4"]["BorderSizePixel"] = 0;
-        GUI["4"]["Size"] = UDim2.new(1, 0, 1, 0);
-        GUI["4"]["Name"] = [[DropShadowHolder]];
-        GUI["4"]["BackgroundTransparency"] = 1;
+        local topBar = Instance.new("Frame", GUI["2"])
+        topBar.Name = "TopBar"
+        topBar.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+        topBar.BackgroundTransparency = 0.5
+        topBar.BorderSizePixel = 0
+        topBar.Size = UDim2.new(1, 0, 0, 25)
         
-        -- StarterGui.ElixirLibary.main.DropShadowHolder.DropShadow
-        GUI["5"] = Instance.new("ImageLabel", GUI["4"]);
-        GUI["5"]["ZIndex"] = 0;
-        GUI["5"]["BorderSizePixel"] = 0;
-        GUI["5"]["SliceCenter"] = Rect.new(49, 49, 450, 450);
-        GUI["5"]["ScaleType"] = Enum.ScaleType.Slice;
-        GUI["5"]["ImageTransparency"] = 0.5;
-        GUI["5"]["ImageColor3"] = Color3.fromRGB(0, 0, 0);
-        GUI["5"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
-        GUI["5"]["Image"] = [[rbxassetid://6014261993]];
-        GUI["5"]["Size"] = UDim2.new(1, 47, 1, 47);
-        GUI["5"]["BackgroundTransparency"] = 1;
-        GUI["5"]["Name"] = [[DropShadow]];
-        GUI["5"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
+        local corner = Instance.new("UICorner", topBar)
+        corner.CornerRadius = UDim.new(0, 10)
+        
+        local title = Instance.new("TextLabel", topBar)
+        title.Name = "Title"
+        title.BackgroundTransparency = 1
+        title.Position = UDim2.new(0, 25, 0, 0)
+        title.Size = UDim2.new(0.5, 0, 1, 0)
+        title.Font = Font.new("rbxasset://fonts/families/GothamSSm.json")
+        title.Text = options.name
+        title.TextColor3 = Color3.fromRGB(255, 255, 255)
+        title.TextSize = 16
+        title.TextXAlignment = Enum.TextXAlignment.Left
+        
+        -- Close Button
+        local closeBtn = Instance.new("ImageButton", topBar)
+        closeBtn.Name = "Close"
+        closeBtn.BackgroundTransparency = 1
+        closeBtn.Position = UDim2.new(1, -25, 0, 5)
+        closeBtn.Size = UDim2.new(0, 15, 0, 15)
+        closeBtn.Image = "rbxassetid://10734898"
+        closeBtn.ImageColor3 = Color3.fromRGB(255, 0, 0)
+        
+        closeBtn.MouseButton1Click:Connect(function()
+            GUI["1"]:Destroy()
+        end)
+        
+        -- Minimize Button
+        local minBtn = Instance.new("ImageButton", topBar)
+        minBtn.Name = "Minimize"
+        minBtn.BackgroundTransparency = 1
+        minBtn.Position = UDim2.new(1, -45, 0, 5)
+        minBtn.Size = UDim2.new(0, 15, 0, 15)
+        minBtn.Image = "rbxassetid://10734898"
+        minBtn.ImageColor3 = Color3.fromRGB(255, 255, 0)
+        
+        minBtn.MouseButton1Click:Connect(function()
+            GUI.Minimized = not GUI.Minimized
+            if GUI.Minimized then
+                Library:tween(GUI["2"], {Size = UDim2.new(0, 425, 0, 25)})
+            else
+                Library:tween(GUI["2"], {Size = UDim2.new(0, 425, 0, 304)})
+            end
+        end)
     end
     
-    
-    -- TopBar - Barra da parte de cima da Ui
-    
+    -- Navigation
     do
-        -- StarterGui.ElixirLibary.main.TopBar
-        GUI["6"] = Instance.new("Frame", GUI["2"]);
-        GUI["6"]["BorderSizePixel"] = 0;
-        GUI["6"]["BackgroundColor3"] = Color3.fromRGB(0, 0, 0);
-        GUI["6"]["Size"] = UDim2.new(1, 0, 0, 25);
-        GUI["6"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-        GUI["6"]["Name"] = [[TopBar]];
-        GUI["6"]["BackgroundTransparency"] = 0.5;
+        local nav = Instance.new("Frame", GUI["2"])
+        nav.Name = "Navigation"
+        nav.BackgroundColor3 = Color3.fromRGB(25, 2, 37)
+        nav.BorderSizePixel = 0
+        nav.Position = UDim2.new(0, 0, 0, 25)
+        nav.Size = UDim2.new(0, 120, 1, -25)
         
+        local corner = Instance.new("UICorner", nav)
+        corner.CornerRadius = UDim.new(0, 10)
         
-        -- StarterGui.ElixirLibary.main.TopBar.UICorner
-        GUI["7"] = Instance.new("UICorner", GUI["6"]);
-        GUI["7"]["CornerRadius"] = UDim.new(0, 10);
+        local buttonHolder = Instance.new("ScrollingFrame", nav)
+        buttonHolder.Name = "ButtonHolder"
+        buttonHolder.BackgroundTransparency = 1
+        buttonHolder.Size = UDim2.new(1, 0, 1, 0)
+        buttonHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
+        buttonHolder.ScrollBarThickness = 0
+        buttonHolder.AutomaticCanvasSize = Enum.AutomaticSize.Y
         
+        local listLayout = Instance.new("UIListLayout", buttonHolder)
+        listLayout.Padding = UDim.new(0, 5)
+        listLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
         
-        -- StarterGui.ElixirLibary.main.TopBar.Extension
-        GUI["8"] = Instance.new("Frame", GUI["6"]);
-        GUI["8"]["BorderSizePixel"] = 0;
-        GUI["8"]["BackgroundColor3"] = Color3.fromRGB(0, 0, 0);
-        GUI["8"]["AnchorPoint"] = Vector2.new(0, 1);
-        GUI["8"]["Size"] = UDim2.new(1, 0, 0.5, 0);
-        GUI["8"]["Position"] = UDim2.new(0, 0, 1, 0);
-        GUI["8"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-        GUI["8"]["Name"] = [[Extension]];
-        GUI["8"]["BackgroundTransparency"] = 0.8;
-        
-        
-        -- StarterGui.ElixirLibary.main.TopBar.Title
-        GUI["9"] = Instance.new("TextLabel", GUI["6"]);
-        GUI["9"]["TextWrapped"] = true;
-        GUI["9"]["TextStrokeTransparency"] = 10;
-        GUI["9"]["BorderSizePixel"] = 0;
-        GUI["9"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-        GUI["9"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-        GUI["9"]["TextSize"] = 16;
-        GUI["9"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-        GUI["9"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-        GUI["9"]["BackgroundTransparency"] = 1;
-        GUI["9"]["Size"] = UDim2.new(0.5, 0, 1, 0);
-        GUI["9"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-        GUI["9"]["Text"] = options["name"];
-        GUI["9"]["Name"] = options["name"];
-        GUI["9"]["Position"] = UDim2.new(0, 25, 0, 0);
-        
-        
-        -- StarterGui.ElixirLibary.main.TopBar.Title.UIPadding
-        GUI["a"] = Instance.new("UIPadding", GUI["9"]);
-        GUI["a"]["PaddingTop"] = UDim.new(0, 1);
-        GUI["a"]["PaddingLeft"] = UDim.new(0, 8);
-        
-        
-        -- StarterGui.ElixirLibary.main.TopBar.Close
-        GUI["b"] = Instance.new("ImageLabel", GUI["6"]);
-        GUI["b"]["BorderSizePixel"] = 0;
-        GUI["b"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-        GUI["b"]["ImageColor3"] = Color3.fromRGB(171, 0, 0);
-        GUI["b"]["AnchorPoint"] = Vector2.new(1, 0.2);
-        GUI["b"]["Image"] = [[rbxassetid://97035610866409]];
-        GUI["b"]["Size"] = UDim2.new(0, 15, 0, 15);
-        GUI["b"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-        GUI["b"]["BackgroundTransparency"] = 1;
-        GUI["b"]["Name"] = [[Close]];
-        GUI["b"]["Position"] = UDim2.new(1, -4, 0, 9);
-        
-        
-        -- StarterGui.ElixirLibary.main.TopBar.Line 1
-        GUI["c"] = Instance.new("Frame", GUI["6"]);
-        GUI["c"]["BorderSizePixel"] = 0;
-        GUI["c"]["BackgroundColor3"] = Color3.fromRGB(100, 0, 149);
-        GUI["c"]["AnchorPoint"] = Vector2.new(0, 1);
-        GUI["c"]["Size"] = UDim2.new(1, 0, 0, 1);
-        GUI["c"]["Position"] = UDim2.new(0, 0, 1, 0);
-        GUI["c"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-        GUI["c"]["Name"] = [[Line 1]];
-        
-        
-        -- StarterGui.ElixirLibary.main.TopBar.Minimize
-        GUI["d"] = Instance.new("ImageLabel", GUI["6"]);
-        GUI["d"]["BorderSizePixel"] = 0;
-        GUI["d"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-        GUI["d"]["ImageColor3"] = Color3.fromRGB(255, 255, 0);
-        GUI["d"]["AnchorPoint"] = Vector2.new(1, 0.2);
-        GUI["d"]["Image"] = [[rbxassetid://97035610866409]];
-        GUI["d"]["Size"] = UDim2.new(0, 15, 0, 15);
-        GUI["d"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-        GUI["d"]["BackgroundTransparency"] = 1;
-        GUI["d"]["Name"] = [[Minimize]];
-        GUI["d"]["Position"] = UDim2.new(0.9, 22, 0, 9);
-        
-        
-        -- StarterGui.ElixirLibary.main.TopBar.ElixirLogo
-        GUI["e"] = Instance.new("ImageLabel", GUI["6"]);
-        GUI["e"]["BorderSizePixel"] = 0;
-        GUI["e"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-        GUI["e"]["Image"] = [[rbxassetid://129554232001027]];
-        GUI["e"]["Size"] = UDim2.new(0, 20, 0, 20);
-        GUI["e"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-        GUI["e"]["BackgroundTransparency"] = 1;
-        GUI["e"]["Name"] = [[ElixirLogo]];
-        GUI["e"]["Position"] = UDim2.new(0, 10, 0, 0);
+        local padding = Instance.new("UIPadding", buttonHolder)
+        padding.PaddingTop = UDim.new(0, 8)
+        padding.PaddingBottom = UDim.new(0, 8)
     end
     
-    -- Navigation that's the bar - Isso e a barra aquela que fica o botão de home e tals dentro da ui
-    
+    -- Content Container
     do
-        -- StarterGui.ElixirLibary.main.Navigation
-        GUI["f"] = Instance.new("Frame", GUI["2"]);
-        GUI["f"]["BorderSizePixel"] = 0;
-        GUI["f"]["BackgroundColor3"] = Color3.fromRGB(25, 2, 37);
-        GUI["f"]["Size"] = UDim2.new(0, 120, 1, -25);
-        GUI["f"]["Position"] = UDim2.new(0, 0, 0, 25);
-        GUI["f"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-        GUI["f"]["Name"] = [[Navigation]];
-        
-        
-        -- StarterGui.ElixirLibary.main.Navigation.UICorner
-        GUI["10"] = Instance.new("UICorner", GUI["f"]);
-        GUI["10"]["CornerRadius"] = UDim.new(0, 10);
-        
-        
-        -- StarterGui.ElixirLibary.main.Navigation.Hide
-        GUI["11"] = Instance.new("Frame", GUI["f"]);
-        GUI["11"]["BorderSizePixel"] = 0;
-        GUI["11"]["BackgroundColor3"] = Color3.fromRGB(25, 2, 37);
-        GUI["11"]["Size"] = UDim2.new(1, 0, 0, 20);
-        GUI["11"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-        GUI["11"]["Name"] = [[Hide]];
-        
-        
-        -- StarterGui.ElixirLibary.main.Navigation.Hide 2
-        GUI["12"] = Instance.new("Frame", GUI["f"]);
-        GUI["12"]["BorderSizePixel"] = 0;
-        GUI["12"]["BackgroundColor3"] = Color3.fromRGB(25, 2, 37);
-        GUI["12"]["AnchorPoint"] = Vector2.new(1, 0);
-        GUI["12"]["Size"] = UDim2.new(0, 20, 1, 0);
-        GUI["12"]["Position"] = UDim2.new(1, 0, 0, 0);
-        GUI["12"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-        GUI["12"]["Name"] = [[Hide 2]];
-        
-        
-        -- StarterGui.ElixirLibary.main.Navigation.ButtonHolder
-        GUI["13"] = Instance.new("Frame", GUI["f"]);
-        GUI["13"]["BorderSizePixel"] = 0;
-        GUI["13"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-        GUI["13"]["Size"] = UDim2.new(1, 0, 1, 0);
-        GUI["13"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-        GUI["13"]["Name"] = [[ButtonHolder]];
-        GUI["13"]["BackgroundTransparency"] = 1;
-        
-        
-        -- StarterGui.ElixirLibary.main.Navigation.ButtonHolder.UIPadding
-        GUI["14"] = Instance.new("UIPadding", GUI["13"]);
-        GUI["14"]["PaddingTop"] = UDim.new(0, 8);
-        GUI["14"]["PaddingRight"] = UDim.new(0, 5);
-        GUI["14"]["PaddingLeft"] = UDim.new(0, 5);
-        GUI["14"]["PaddingBottom"] = UDim.new(0, 8);
-        
-        
-        -- StarterGui.ElixirLibary.main.Navigation.ButtonHolder.UIListLayout
-        GUI["15"] = Instance.new("UIListLayout", GUI["13"]);
-        GUI["15"]["Padding"] = UDim.new(0, 6);
-        GUI["15"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
-        
-        
-        -- StarterGui.ElixirLibary.main.Navigation.Line
-        GUI["20"] = Instance.new("Frame", GUI["f"]);
-        GUI["20"]["BorderSizePixel"] = 0;
-        GUI["20"]["BackgroundColor3"] = Color3.fromRGB(100, 0, 149);
-        GUI["20"]["Size"] = UDim2.new(0, 1, 1, 0);
-        GUI["20"]["Position"] = UDim2.new(1, 0, 0, 0);
-        GUI["20"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-        GUI["20"]["Name"] = [[Line]];
+        local container = Instance.new("Frame", GUI["2"])
+        container.Name = "ContentContainer"
+        container.BackgroundTransparency = 1
+        container.Position = UDim2.new(0, 125, 0, 30)
+        container.Size = UDim2.new(1, -130, 1, -35)
     end
     
-    -- Container This is the content of what you get when you click on a navigation button - Isso e as coisas que você tem quando clica em um botão da navegação
-    
-    do
-        -- StarterGui.ElixirLibary.main.ContentContainer
-        GUI["21"] = Instance.new("Frame", GUI["2"]);
-        GUI["21"]["BorderSizePixel"] = 0;
-        GUI["21"]["BackgroundColor3"] = Color3.fromRGB(27, 27, 27);
-        GUI["21"]["AnchorPoint"] = Vector2.new(1, 0);
-        GUI["21"]["Size"] = UDim2.new(1, -132, 1, -37);
-        GUI["21"]["Position"] = UDim2.new(1, -6, 0, 31);
-        GUI["21"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-        GUI["21"]["Name"] = [[ContentContainer]];
-        GUI["21"]["BackgroundTransparency"] = 1;
-    end
-    
-    function GUI:Tab(options)
+    -- Tab System
+    function GUI:CreateTab(options)
         options = Library:validate({
-            name = "Preview Tab",
-            icon = "rbxassetid://90095205604357"
+            name = "New Tab",
+            icon = "rbxassetid://10734898"
         }, options or {})
         
         local Tab = {
             Hover = false,
-            Active = false,
-            Elements = {} -- Para armazenar elementos do tab
+            Active = false
         }
         
-        -- Render // Renderização
-        
+        -- Tab Button
         do
-            -- StarterGui.ElixirLibary.main.Navigation.ButtonHolder.Inactive
-            Tab["1b"] = Instance.new("TextLabel", GUI["13"]);
-            Tab["1b"]["BorderSizePixel"] = 0;
-            Tab["1b"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-            Tab["1b"]["BackgroundColor3"] = Color3.fromRGB(0, 0, 0);
-            Tab["1b"]["TextSize"] = 12;
-            Tab["1b"]["FontFace"] = Font.new([[rbxasset://fonts/families/Ubuntu.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-            Tab["1b"]["TextColor3"] = Color3.fromRGB(157, 157, 157);
-            Tab["1b"]["BackgroundTransparency"] = 0.45;
-            Tab["1b"]["Size"] = UDim2.new(1, 0, 0, 24);
-            Tab["1b"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-            Tab["1b"]["Text"] = options.name;
-            Tab["1b"]["Name"] = [[Inactive]];
+            Tab.Button = Instance.new("TextButton", GUI["2"].Navigation.ButtonHolder)
+            Tab.Button.Name = options.name
+            Tab.Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+            Tab.Button.BackgroundTransparency = 0.45
+            Tab.Button.Size = UDim2.new(0.9, 0, 0, 24)
+            Tab.Button.Font = Font.new("rbxasset://fonts/families/Ubuntu.json")
+            Tab.Button.Text = options.name
+            Tab.Button.TextColor3 = Color3.fromRGB(157, 157, 157)
+            Tab.Button.TextSize = 12
+            Tab.Button.TextXAlignment = Enum.TextXAlignment.Left
             
+            local corner = Instance.new("UICorner", Tab.Button)
+            local stroke = Instance.new("UIStroke", Tab.Button)
+            stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+            stroke.Color = Color3.fromRGB(100, 0, 149)
             
-            -- StarterGui.ElixirLibary.main.Navigation.ButtonHolder.Inactive.UIPadding
-            Tab["1c"] = Instance.new("UIPadding", Tab["1b"]);
-            Tab["1c"]["PaddingLeft"] = UDim.new(0, 26);
-            
-            
-            -- StarterGui.ElixirLibary.main.Navigation.ButtonHolder.Inactive.Icon Home
-            Tab["1d"] = Instance.new("ImageLabel", Tab["1b"]);
-            Tab["1d"]["BorderSizePixel"] = 0;
-            Tab["1d"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-            Tab["1d"]["ImageTransparency"] = 0.5;
-            Tab["1d"]["AnchorPoint"] = Vector2.new(0, 0.5);
-            Tab["1d"]["Image"] = options.icon;
-            Tab["1d"]["Size"] = UDim2.new(0, 18, 0, 18);
-            Tab["1d"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-            Tab["1d"]["BackgroundTransparency"] = 1;
-            Tab["1d"]["Name"] = [[Icon Home]];
-            Tab["1d"]["Position"] = UDim2.new(0, -21, 0.5, 0);
-            
-            
-            -- StarterGui.ElixirLibary.main.Navigation.ButtonHolder.Inactive.UICorner
-            Tab["1e"] = Instance.new("UICorner", Tab["1b"]);
-            
-            
-            
-            -- StarterGui.ElixirLibary.main.Navigation.ButtonHolder.Inactive.UIStroke
-            Tab["1f"] = Instance.new("UIStroke", Tab["1b"]);
-            Tab["1f"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
-            Tab["1f"]["Color"] = Color3.fromRGB(100, 0, 149);
-            
-            -- StarterGUI.ElixirLibary.main.ContentContainer.HomeTab 2
-            Tab["23"] = Instance.new("ScrollingFrame", Tab["21"]);
-            Tab["23"]["BorderSizePixel"] = 0;
-            Tab["23"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-            Tab["23"]["Name"] = [[HomeTab 2]];
-            Tab["23"]["ScrollBarImageTransparency"] = 1;
-            Tab["23"]["Selectable"] = false;
-            Tab["23"]["Size"] = UDim2.new(1, 0, 1, 0);
-            Tab["23"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-            Tab["23"]["ScrollBarThickness"] = 0;
-            Tab["23"]["BackgroundTransparency"] = false;
-            Tab["23"]["Visible"] = false;
+            local icon = Instance.new("ImageLabel", Tab.Button)
+            icon.Name = "Icon"
+            icon.BackgroundTransparency = 1
+            icon.Position = UDim2.new(0, 5, 0.5, -9)
+            icon.Size = UDim2.new(0, 18, 0, 18)
+            icon.Image = options.icon
+            icon.ImageColor3 = Color3.fromRGB(157, 157, 157)
         end
         
-        -- Methods // Metodos
+        -- Tab Container
+        do
+            Tab.Container = Instance.new("ScrollingFrame", GUI["2"].ContentContainer)
+            Tab.Container.Name = options.name.."Container"
+            Tab.Container.BackgroundTransparency = 1
+            Tab.Container.Size = UDim2.new(1, 0, 1, 0)
+            Tab.Container.CanvasSize = UDim2.new(0, 0, 0, 0)
+            Tab.Container.ScrollBarThickness = 2
+            Tab.Container.Visible = false
+            Tab.Container.AutomaticCanvasSize = Enum.AutomaticSize.Y
+            
+            local listLayout = Instance.new("UIListLayout", Tab.Container)
+            listLayout.Padding = UDim.new(0, 5)
+            listLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+            
+            local padding = Instance.new("UIPadding", Tab.Container)
+            padding.PaddingTop = UDim.new(0, 5)
+            padding.PaddingBottom = UDim.new(0, 5)
+            padding.PaddingLeft = UDim.new(0, 5)
+            padding.PaddingRight = UDim.new(0, 5)
+        end
         
+        -- Tab Functions
         function Tab:Activate()
-            if not Tab.Active then
-                if GUI.CurrentTab ~= nil then
-                    GUI.CurrentTab:Deactivate()
-                end
-                
-                Tab.Active = true
-                Library:tween(Tab["1b"], {BackgroundTransparency = 0.8})
-                Library:tween(Tab["1b"], {TextColor3 = Color3.fromRGB(255, 255, 255)})
-                Library:tween(Tab["1d"], {ImageColor3 = Color3.fromRGB(255, 255, 255)})
-                Tab["23"].Visible = true
-                
-                GUI.CurrentTab = Tab
+            if GUI.CurrentTab then
+                GUI.CurrentTab:Deactivate()
             end
+            
+            Tab.Active = true
+            Tab.Container.Visible = true
+            Library:tween(Tab.Button, {BackgroundTransparency = 0.8})
+            Library:tween(Tab.Button, {TextColor3 = Color3.fromRGB(255, 255, 255)})
+            Library:tween(Tab.Button.Icon, {ImageColor3 = Color3.fromRGB(255, 255, 255)})
+            
+            GUI.CurrentTab = Tab
         end
         
         function Tab:Deactivate()
-            if Tab.Active then
-                Tab.Active = false
-                Tab.Hover = false
-                Library:tween(Tab["1b"], {TextColor3 = Color3.fromRGB(200, 200, 200)})
-                Library:tween(Tab["1d"], {ImageColor3 = Color3.fromRGB(200, 200, 200)})
-                Library:tween(Tab["1b"], {BackgroundTransparency = 1})
-                Tab["23"].Visible = false
-            end
+            Tab.Active = false
+            Tab.Container.Visible = false
+            Library:tween(Tab.Button, {BackgroundTransparency = 0.45})
+            Library:tween(Tab.Button, {TextColor3 = Color3.fromRGB(157, 157, 157)})
+            Library:tween(Tab.Button.Icon, {ImageColor3 = Color3.fromRGB(157, 157, 157)})
         end
         
-        -- Logic // Logica
-        
-        do 
-            Tab["1b"].MouseEnter:Connect(function()
-                Tab.Hover = true
-                
-                if not Tab.Active then
-                    Library:tween(Tab["1b"], {TextColor3 = Color3.fromRGB(255, 255, 255)})
-                    Library:tween(Tab["1d"], {ImageColor3 = Color3.fromRGB(255, 255, 255)})
-                end
-            end)
-            
-            Tab["1b"].MouseLeave:Connect(function()
-                Tab.Hover = false
-                
-                if not Tab.Active then
-                    Library:tween(Tab["1b"], {TextColor3 = Color3.fromRGB(200, 200, 200)})
-                    Library:tween(Tab["1d"], {ImageColor3 = Color3.fromRGB(200, 200, 200)})
-                end
-            end)
-            
-            uis.InputBegan:Connect(function(input, gpe)
-                if gpe then return end
-                
-                if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                    if Tab.Hover then 
-                        Tab.Activate()
-                    end
-                end
-            end)
-            
-            if GUI.CurrentTab == nil then
-                Tab:Activate()
-            end
-        end
-        
-        -- Adicionar funções para elementos da UI
+        -- Elements
         function Tab:AddButton(options)
             options = Library:validate({
                 name = "Button",
                 callback = function() end
             }, options or {})
             
-            local Button = {
-                Hover = false,
-                MouseDown = false
-            }
+            local Button = Instance.new("TextButton", Tab.Container)
+            Button.Name = "Button"
+            Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+            Button.Size = UDim2.new(1, 0, 0, 30)
+            Button.Font = Font.new("rbxasset://fonts/families/Ubuntu.json")
+            Button.Text = options.name
+            Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+            Button.TextSize = 14
             
-            -- Renderização do botão
-            do
-                Button["1"] = Instance.new("Frame", Tab["23"])
-                Button["1"].Name = "Button"
-                Button["1"].BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-                Button["1"].Size = UDim2.new(1, 0, 0, 30)
-                
-                -- UICorner
-                Button["2"] = Instance.new("UICorner", Button["1"])
-                
-                -- UIStroke
-                Button["3"] = Instance.new("UIStroke", Button["1"])
-                Button["3"].ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-                Button["3"].Color = Color3.fromRGB(100, 0, 149)
-                
-                -- Text Label
-                Button["4"] = Instance.new("TextLabel", Button["1"])
-                Button["4"].BackgroundTransparency = 1
-                Button["4"].Size = UDim2.new(1, -20, 1, 0)
-                Button["4"].Text = options.name
-                Button["4"].TextColor3 = Color3.fromRGB(255, 255, 255)
-                Button["4"].TextSize = 14
-                Button["4"].TextXAlignment = Enum.TextXAlignment.Left
-                Button["4"].FontFace = Font.new("rbxasset://fonts/families/Ubuntu.json")
-            end
+            local corner = Instance.new("UICorner", Button)
+            local stroke = Instance.new("UIStroke", Button)
+            stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+            stroke.Color = Color3.fromRGB(100, 0, 149)
             
-            -- Lógica do botão
-            do
-                Button["1"].MouseEnter:Connect(function()
-                    Button.Hover = true
-                    Library:tween(Button["1"], {BackgroundColor3 = Color3.fromRGB(15, 15, 15)})
-                end)
-                
-                Button["1"].MouseLeave:Connect(function()
-                    Button.Hover = false
-                    if not Button.MouseDown then
-                        Library:tween(Button["1"], {BackgroundColor3 = Color3.fromRGB(0, 0, 0)})
-                    end
-                end)
-                
-                Button["1"].MouseButton1Down:Connect(function()
-                    Button.MouseDown = true
-                    Library:tween(Button["1"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
-                    options.callback()
-                end)
-                
-                Button["1"].MouseButton1Up:Connect(function()
-                    Button.MouseDown = false
-                    if Button.Hover then
-                        Library:tween(Button["1"], {BackgroundColor3 = Color3.fromRGB(15, 15, 15)})
-                    else
-                        Library:tween(Button["1"], {BackgroundColor3 = Color3.fromRGB(0, 0, 0)})
-                    end
-                end)
-            end
+            Button.MouseButton1Click:Connect(options.callback)
             
-            table.insert(Tab.Elements, Button)
             return Button
         end
         
@@ -496,76 +277,104 @@ function Library:Init(options)
                 callback = function(value) end
             }, options or {})
             
-            local Toggle = {
-                Value = options.default,
-                Hover = false
-            }
+            local Toggle = {Value = options.default}
             
-            -- Renderização do toggle
-            do
-                Toggle["1"] = Instance.new("Frame", Tab["23"])
-                Toggle["1"].Name = "Toggle"
-                Toggle["1"].BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-                Toggle["1"].Size = UDim2.new(1, 0, 0, 30)
-                
-                -- Adicionar elementos visuais do toggle (similar ao seu código fonte)
-                -- ... (adicionar UICorner, UIStroke, etc.)
-            end
+            Toggle.Button = Instance.new("TextButton", Tab.Container)
+            Toggle.Button.Name = "Toggle"
+            Toggle.Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+            Toggle.Button.Size = UDim2.new(1, 0, 0, 30)
+            Toggle.Button.Text = ""
             
-            -- Lógica do toggle
-            do
-                Toggle["1"].MouseButton1Click:Connect(function()
-                    Toggle.Value = not Toggle.Value
-                    Library:tween(Toggle.CheckmarkHolder, {BackgroundColor3 = Toggle.Value and Color3.fromRGB(86, 0, 128) or Color3.fromRGB(32, 32, 32)})
-                    Library:tween(Toggle.Checkmark, {ImageTransparency = Toggle.Value and 0 or 1})
-                    options.callback(Toggle.Value)
-                end)
-            end
+            local corner = Instance.new("UICorner", Toggle.Button)
+            local stroke = Instance.new("UIStroke", Toggle.Button)
+            stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+            stroke.Color = Color3.fromRGB(100, 0, 149)
             
-            table.insert(Tab.Elements, Toggle)
+            local title = Instance.new("TextLabel", Toggle.Button)
+            title.BackgroundTransparency = 1
+            title.Size = UDim2.new(1, -50, 1, 0)
+            title.Font = Font.new("rbxasset://fonts/families/Ubuntu.json")
+            title.Text = options.name
+            title.TextColor3 = Color3.fromRGB(255, 255, 255)
+            title.TextSize = 14
+            title.TextXAlignment = Enum.TextXAlignment.Left
+            
+            local indicator = Instance.new("Frame", Toggle.Button)
+            indicator.Name = "Indicator"
+            indicator.AnchorPoint = Vector2.new(1, 0.5)
+            indicator.BackgroundColor3 = Toggle.Value and Color3.fromRGB(86, 0, 128) or Color3.fromRGB(32, 32, 32)
+            indicator.Position = UDim2.new(1, -5, 0.5, 0)
+            indicator.Size = UDim2.new(0, 40, 0, 20)
+            
+            local indicatorCorner = Instance.new("UICorner", indicator)
+            indicatorCorner.CornerRadius = UDim.new(1, 0)
+            
+            local circle = Instance.new("Frame", indicator)
+            circle.Name = "Circle"
+            circle.AnchorPoint = Vector2.new(0, 0.5)
+            circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            circle.Position = Toggle.Value and UDim2.new(1, -18, 0.5, 0) or UDim2.new(0, 2, 0.5, 0)
+            circle.Size = UDim2.new(0, 16, 0, 16)
+            
+            local circleCorner = Instance.new("UICorner", circle)
+            circleCorner.CornerRadius = UDim.new(1, 0)
+            
+            Toggle.Button.MouseButton1Click:Connect(function()
+                Toggle.Value = not Toggle.Value
+                Library:tween(indicator, {BackgroundColor3 = Toggle.Value and Color3.fromRGB(86, 0, 128) or Color3.fromRGB(32, 32, 32)})
+                Library:tween(circle, {Position = Toggle.Value and UDim2.new(1, -18, 0.5, 0) or UDim2.new(0, 2, 0.5, 0)})
+                options.callback(Toggle.Value)
+            end)
+            
             return Toggle
+        end
+        
+        -- Tab Button Logic
+        Tab.Button.MouseButton1Click:Connect(function()
+            Tab:Activate()
+        end)
+        
+        if not GUI.CurrentTab then
+            Tab:Activate()
         end
         
         return Tab
     end
     
-    -- Tornar a UI móvel
+    -- Make GUI Draggable
     do
         local dragging = false
         local dragInput, mousePos, framePos
-
+        
         GUI["2"].InputBegan:Connect(function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                 dragging = true
                 mousePos = input.Position
                 framePos = GUI["2"].Position
+                
+                input.Changed:Connect(function()
+                    if input.UserInputState == Enum.UserInputState.End then
+                        dragging = false
+                    end
+                end)
             end
         end)
-
-        GUI["2"].InputEnded:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                dragging = false
-            end
-        end)
-
+        
         GUI["2"].InputChanged:Connect(function(input)
             if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-                if dragging then
-                    local delta = input.Position - mousePos
-                    GUI["2"].Position = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X, framePos.Y.Scale, framePos.Y.Offset + delta.Y)
-                end
+                dragInput = input
+            end
+        end)
+        
+        uis.InputChanged:Connect(function(input)
+            if input == dragInput and dragging then
+                local delta = input.Position - mousePos
+                GUI["2"].Position = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X, framePos.Y.Scale, framePos.Y.Offset + delta.Y)
             end
         end)
     end
     
-    return Library
+    return GUI
 end
 
--- options modify // opções na ui que podem ser modificadas
-
-local main = Library:Init {
-    name = "custom name"
-}
-
-local tab = main:CreateTab()
-local tab1 = main:CreateTab({name="key"})
+return Library
