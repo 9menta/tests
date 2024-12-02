@@ -560,3 +560,12 @@ function Library:Init(options)
     
     return Library
 end
+
+-- options modify // opções na ui que podem ser modificadas
+
+local main = Library:Init {
+    name = "custom name"
+}
+
+local tab = main:CreateTab()
+local tab1 = main:CreateTab({name="key"})
