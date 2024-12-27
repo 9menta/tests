@@ -101,7 +101,7 @@ function Library:CreateWindow(hubname)
     Body_Corner.Name = "Body_Corner"
     Body_Corner.Parent = Body
 
-    Title_Hub.Name = "viena_Hub"
+    Title_Hub.Name = "Viena Hub"
     Title_Hub.Parent = Body
     Title_Hub.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     Title_Hub.BackgroundTransparency = 1.000
@@ -184,7 +184,7 @@ function Library:CreateWindow(hubname)
     end)
 
     Discord.MouseButton1Click:Connect(function()
-        (setclipboard or toclipboard)("https://discord.gg/WwMT2QH8")
+        (setclipboard or toclipboard)("https://discord.gg/vienacommunity")
         wait(.1)
         game:GetService("StarterGui"):SetCore("SendNotification",{
             Title = "Discord",
@@ -678,7 +678,7 @@ function Library:CreateWindow(hubname)
                     end)
 
                     TextButton.MouseButton1Down:Connect(function()
-                        utility:Tween(TextButton, {TextColor3 = Color3.fromRGB(0, 255, 0)}, .15)
+                        utility:Tween(TextButton, {TextColor3 = Color3.fromRGB(0, 30, 255)}, .15)
                         utility:Tween(TextButton, {Size = UDim2.new(1, -25, 0, 15)}, .15)
                     end)
 
@@ -740,8 +740,8 @@ function Library:CreateWindow(hubname)
                     local CheckToggle = false
                     if default then
                         ImageButton.ImageRectOffset = Vector2.new(4, 836);
-                        ImageButton.ImageColor3 = Color3.fromRGB(0, 255, 0);
-                        TextLabel.TextColor3 = Color3.fromRGB(0, 255, 0);
+                        ImageButton.ImageColor3 = Color3.fromRGB(0, 38, 255);
+                        TextLabel.TextColor3 = Color3.fromRGB(0, 21, 255);
                         CheckToggle = not CheckToggle;
                         callback(CheckToggle);
                     end
@@ -761,8 +761,8 @@ function Library:CreateWindow(hubname)
                     ImageButton.MouseButton1Click:Connect(function ()
                         if not CheckToggle then
                             ImageButton.ImageRectOffset = Vector2.new(4, 836);
-                            utility:Tween(ImageButton, {ImageColor3 = Color3.fromRGB(0, 255, 0)}, .3);
-                            utility:Tween(TextLabel, {TextColor3 = Color3.fromRGB(0, 255, 0)}, .3);
+                            utility:Tween(ImageButton, {ImageColor3 = Color3.fromRGB(0, 34, 255)}, .3);
+                            utility:Tween(TextLabel, {TextColor3 = Color3.fromRGB(0, 17, 255)}, .3);
                         else
                             ImageButton.ImageRectOffset = Vector2.new(940, 784);
                             utility:Tween(ImageButton, {ImageColor3 = Color3.fromRGB(255, 255, 255)}, .3);
@@ -867,8 +867,8 @@ function Library:CreateWindow(hubname)
                             utility:Tween(TextLabel, {TextColor3 = Color3.fromRGB(255, 255, 255)}, .15)
                         else
                             utility:Tween(ScrollDown, {Size = UDim2.new(1, -10, 0, 0 + UIListLayout.AbsoluteContentSize.Y + 5)}, 0.15)
-                            utility:Tween(ImageButton, {ImageColor3 = Color3.fromRGB(0, 255, 0)}, .15)
-                            utility:Tween(TextLabel, {TextColor3 = Color3.fromRGB(0, 255, 0)}, .15)
+                            utility:Tween(ImageButton, {ImageColor3 = Color3.fromRGB(0, 26, 255)}, .15)
+                            utility:Tween(TextLabel, {TextColor3 = Color3.fromRGB(0, 26, 255)}, .15)
                         end
                         dropdown_toggle = not dropdown_toggle
                     end)
@@ -890,7 +890,7 @@ function Library:CreateWindow(hubname)
     
                         TextButton.MouseEnter:Connect(function()
                             utility:Tween(TextButton, {TextSize = 9.000}, 0.15)
-                            utility:Tween(TextButton, {TextColor3 = Color3.fromRGB(0, 255, 0)}, 0.15)
+                            utility:Tween(TextButton, {TextColor3 = Color3.fromRGB(0, 26, 255)}, 0.15)
                         end)
     
                         TextButton.MouseLeave:Connect(function()
@@ -941,7 +941,7 @@ function Library:CreateWindow(hubname)
         
                             TextButton.MouseEnter:Connect(function()
                                 utility:Tween(TextButton, {TextSize = 9.000}, 0.15)
-                                utility:Tween(TextButton, {TextColor3 = Color3.fromRGB(0, 255, 0)}, 0.15)
+                                utility:Tween(TextButton, {TextColor3 = Color3.fromRGB(0, 26, 255)}, 0.15)
                             end)
         
                             TextButton.MouseLeave:Connect(function()
@@ -1009,8 +1009,8 @@ function Library:CreateWindow(hubname)
                     local function onFocusLost(enterPressed, default)
                         if enterPressed then
                             callback(TextBox.Text)
-                            utility:Tween(TextBox, {TextColor3 = Color3.fromRGB(0, 255, 0)}, .1);
-                            utility:Tween(TextLabel, {TextColor3 = Color3.fromRGB(0, 255, 0)}, .1);
+                            utility:Tween(TextBox, {TextColor3 = Color3.fromRGB(0, 30, 255)}, .1);
+                            utility:Tween(TextLabel, {TextColor3 = Color3.fromRGB(0, 30, 255)}, .1);
                             wait(.1);
                             utility:Tween(TextBox, {TextColor3 = Color3.fromRGB(255, 255, 255)}, .5);
                             utility:Tween(TextLabel, {TextColor3 = Color3.fromRGB(255, 255, 255)}, .5);
@@ -1075,8 +1075,8 @@ function Library:CreateWindow(hubname)
                             TextButton.Text = inputwait.KeyCode.Name;
                             Key = inputwait.KeyCode.Name;
                             callback(Key);
-                            utility:Tween(TextButton, {TextColor3 = Color3.fromRGB(0, 255, 0)}, .1);
-                            utility:Tween(TextLabel, {TextColor3 = Color3.fromRGB(0, 255, 0)}, .1);
+                            utility:Tween(TextButton, {TextColor3 = Color3.fromRGB(0, 30, 255)}, .1);
+                            utility:Tween(TextLabel, {TextColor3 = Color3.fromRGB(0, 30, 255)}, .1);
                             wait(.1);
                             utility:Tween(TextButton, {TextColor3 = Color3.fromRGB(255, 255, 255)}, 1);
                             utility:Tween(TextLabel, {TextColor3 = Color3.fromRGB(255, 255, 255)}, 1);
